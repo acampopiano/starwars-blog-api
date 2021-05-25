@@ -106,7 +106,7 @@ var People = /** @class */ (function (_super) {
         __metadata("design:type", Planets_1.Planets)
     ], People.prototype, "planets");
     __decorate([
-        typeorm_1.OneToMany(function () { return PeopleVehicle_1.PeopleVehicle; }, function (peoplevehicle) { return peoplevehicle.vehicles; }),
+        typeorm_1.OneToMany(function () { return PeopleVehicle_1.PeopleVehicle; }, function (peoplevehicle) { return peoplevehicle.vehicles; }, { cascade: true }),
         __metadata("design:type", Array)
     ], People.prototype, "peoplevehicle");
     People = __decorate([

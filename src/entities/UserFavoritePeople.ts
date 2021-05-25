@@ -8,10 +8,10 @@ import { People } from "./People"
 @Entity()
 export class UserFavoritePeople extends BaseEntity {        
     //Relationship with people(many userfavoritepeople to one people)
-    @ManyToOne(() => People, people => people.id)
+    @ManyToOne(() => People, people => people.id,{primary: true})
     people: People;
     
     //Relationship with user(many userfavoritepeople to one user)
-    @ManyToOne(() => User, user => user.id)
+    @ManyToOne(() => User, user => user.id,{primary: true})
     user: User;
 }

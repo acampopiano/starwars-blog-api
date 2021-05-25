@@ -64,6 +64,6 @@ import {
     planets: Planets;   
     
     //Relationship with peoplevehicles (one people drive many vehicles)
-    @OneToMany(() => PeopleVehicle, peoplevehicle => peoplevehicle.vehicles)
+    @OneToMany(() => PeopleVehicle, peoplevehicle => peoplevehicle.vehicles,{cascade: true})
     peoplevehicle: PeopleVehicle[];       
   }

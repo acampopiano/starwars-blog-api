@@ -34,11 +34,11 @@ var PeopleVehicle = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
-        typeorm_1.ManyToOne(function () { return People_1.People; }, function (people) { return people.id; }),
+        typeorm_1.ManyToOne(function () { return People_1.People; }, function (people) { return people.id; }, { primary: true }),
         __metadata("design:type", People_1.People)
     ], PeopleVehicle.prototype, "people");
     __decorate([
-        typeorm_1.ManyToOne(function () { return Vehicles_1.Vehicles; }, function (vehicle) { return vehicle.id; }),
+        typeorm_1.ManyToOne(function () { return Vehicles_1.Vehicles; }, function (vehicle) { return vehicle.id; }, { primary: true }),
         __metadata("design:type", Vehicles_1.Vehicles)
     ], PeopleVehicle.prototype, "vehicles");
     PeopleVehicle = __decorate([

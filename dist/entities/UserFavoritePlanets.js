@@ -34,11 +34,11 @@ var UserFavoritePlanets = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
-        typeorm_1.ManyToOne(function () { return Planets_1.Planets; }, function (planet) { return planet.id; }),
+        typeorm_1.ManyToOne(function () { return Planets_1.Planets; }, function (planet) { return planet.id; }, { primary: true }),
         __metadata("design:type", Planets_1.Planets)
     ], UserFavoritePlanets.prototype, "planets");
     __decorate([
-        typeorm_1.ManyToOne(function () { return User_1.User; }, function (user) { return user.id; }),
+        typeorm_1.ManyToOne(function () { return User_1.User; }, function (user) { return user.id; }, { primary: true }),
         __metadata("design:type", User_1.User)
     ], UserFavoritePlanets.prototype, "user");
     UserFavoritePlanets = __decorate([
