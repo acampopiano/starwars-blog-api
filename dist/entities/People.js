@@ -91,11 +91,11 @@ var People = /** @class */ (function (_super) {
     ], People.prototype, "starships");
     __decorate([
         typeorm_1.Column(),
-        __metadata("design:type", String)
+        __metadata("design:type", Date)
     ], People.prototype, "created");
     __decorate([
         typeorm_1.Column(),
-        __metadata("design:type", String)
+        __metadata("design:type", Date)
     ], People.prototype, "edited");
     __decorate([
         typeorm_1.Column(),

@@ -51,10 +51,10 @@ import {
     starships:string[];
 
     @Column()
-    created: string;
+    created: Date;
 
     @Column()
-    edited: string;
+    edited: Date;
 
     @Column()
     url: string;
