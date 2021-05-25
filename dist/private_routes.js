@@ -41,4 +41,6 @@ router.get('/createPeople', utils_1.safe(actions.createPeople));
 router.get('/people', utils_1.safe(actions.getPeople));
 router.get('/people/:id', utils_1.safe(actions.getPeopleId));
 router.get('/createPlanets', utils_1.safe(actions.createPlanets));
+router.get('/planets', utils_1.safe(actions.getPlanets));
+router.get('/planets/:id', utils_1.safe(actions.getPlanetId));
 exports["default"] = router;

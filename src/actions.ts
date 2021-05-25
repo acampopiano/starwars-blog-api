@@ -128,3 +128,15 @@ export const createPlanets = async (req: Request, res: Response): Promise<Respon
     }
     return res.json(r);
 }
+
+export const getPlanets = async (req: Request, res: Response): Promise<Response> => {
+    const planets = await getRepository(Planets).find();
+    return res.json(planets);
+}
+
+export const getPlanetId = async (req: Request, res: Response): Promise<Response> => {
+    const planetsRepo = getRepository(Planets)
+    const planet = await planetsRepo.findOne(req.params.id)
+    if (!planet) throw new Exception("Planet does not exist")
+    return res.json(planet);
+}

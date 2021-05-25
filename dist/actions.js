@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.createPlanets = exports.getPeopleId = exports.getPeople = exports.createPeople = exports.getUsers = exports.createUser = void 0;
+exports.getPlanetId = exports.getPlanets = exports.createPlanets = exports.getPeopleId = exports.getPeople = exports.createPeople = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var User_1 = require("./entities/User");
 var utils_1 = require("./utils");
@@ -251,3 +251,31 @@ var createPlanets = function (req, res) { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.createPlanets = createPlanets;
+var getPlanets = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var planets;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Planets_1.Planets).find()];
+            case 1:
+                planets = _a.sent();
+                return [2 /*return*/, res.json(planets)];
+        }
+    });
+}); };
+exports.getPlanets = getPlanets;
+var getPlanetId = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var planetsRepo, planet;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                planetsRepo = typeorm_1.getRepository(Planets_1.Planets);
+                return [4 /*yield*/, planetsRepo.findOne(req.params.id)];
+            case 1:
+                planet = _a.sent();
+                if (!planet)
+                    throw new utils_1.Exception("Planet does not exist");
+                return [2 /*return*/, res.json(planet)];
+        }
+    });
+}); };
+exports.getPlanetId = getPlanetId;

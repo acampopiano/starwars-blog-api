@@ -23,5 +23,7 @@ router.get('/createPeople', safe(actions.createPeople));
 router.get('/people', safe(actions.getPeople));
 router.get('/people/:id', safe(actions.getPeopleId));
 router.get('/createPlanets', safe(actions.createPlanets));
+router.get('/planets', safe(actions.getPlanets));
+router.get('/planets/:id', safe(actions.getPlanetId));
 
 export default router;
