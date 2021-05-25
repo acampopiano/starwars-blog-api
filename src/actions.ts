@@ -29,17 +29,7 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
 }
 
 export const createPeople = async (req: Request, res: Response): Promise<Response> => {
-    const baseURL = "https://swapi.dev/api/people";
-    /*const fetchVehiclesData = async () => {
-        try {
-            const response = await fetch(baseURL);
-            const responseJson = await response.json();
-            return responseJson.results;
-        } catch (e) {
-            console.error(e);
-        }
-    };
-    console.log(fetchVehiclesData());*/
+    const baseURL = "https://swapi.dev/api/people";   
 
     const fetchPeopleData = await fetch(baseURL)
         .then(async res => {
