@@ -1,13 +1,13 @@
 // To parse this data:
 //
-//   import { Convert, Results } from "./file";
+//   import { Convert, People } from "./file";
 //
-//   const results = Convert.toResults(json);
+//   const people = Convert.toPeople(json);
 //
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
 
-export interface Results {
+export interface People {
     count:    number;
     next:     string;
     previous: null;
@@ -42,12 +42,12 @@ export enum Gender {
 // Converts JSON strings to/from your types
 // and asserts the results of JSON.parse at runtime
 export class Convert {
-    public static toResults(json: string): Results {
-        return cast(JSON.parse(json), r("Results"));
+    public static toPeople(json: string): People {
+        return cast(JSON.parse(json), r("People"));
     }
 
-    public static resultsToJson(value: Results): string {
-        return JSON.stringify(uncast(value, r("Results")), null, 2);
+    public static peopleToJson(value: People): string {
+        return JSON.stringify(uncast(value, r("People")), null, 2);
     }
 }
 
@@ -184,7 +184,7 @@ function r(name: string) {
 }
 
 const typeMap: any = {
-    "Results": o([
+    "People": o([
         { json: "count", js: "count", typ: 0 },
         { json: "next", js: "next", typ: "" },
         { json: "previous", js: "previous", typ: null },

@@ -42,14 +42,6 @@ var Planets = /** @class */ (function (_super) {
     ], Planets.prototype, "name");
     __decorate([
         typeorm_1.Column(),
-        __metadata("design:type", String)
-    ], Planets.prototype, "description");
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], Planets.prototype, "diameter");
-    __decorate([
-        typeorm_1.Column(),
         __metadata("design:type", Number)
     ], Planets.prototype, "rotation_period");
     __decorate([
@@ -58,16 +50,16 @@ var Planets = /** @class */ (function (_super) {
     ], Planets.prototype, "orbital_period");
     __decorate([
         typeorm_1.Column(),
-        __metadata("design:type", String)
-    ], Planets.prototype, "gravity");
-    __decorate([
-        typeorm_1.Column(),
         __metadata("design:type", Number)
-    ], Planets.prototype, "population");
+    ], Planets.prototype, "diameter");
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
     ], Planets.prototype, "climate");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Planets.prototype, "gravity");
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
@@ -78,8 +70,28 @@ var Planets = /** @class */ (function (_super) {
     ], Planets.prototype, "surface_water");
     __decorate([
         typeorm_1.Column(),
+        __metadata("design:type", Number)
+    ], Planets.prototype, "population");
+    __decorate([
+        typeorm_1.Column({ type: 'text', array: true, nullable: true }),
+        __metadata("design:type", Array)
+    ], Planets.prototype, "residents");
+    __decorate([
+        typeorm_1.Column({ type: 'text', array: true, nullable: true }),
+        __metadata("design:type", Array)
+    ], Planets.prototype, "films");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", Date)
+    ], Planets.prototype, "created");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", Date)
+    ], Planets.prototype, "edited");
+    __decorate([
+        typeorm_1.Column(),
         __metadata("design:type", String)
-    ], Planets.prototype, "imageURL");
+    ], Planets.prototype, "url");
     __decorate([
         typeorm_1.OneToMany(function () { return People_1.People; }, function (people) { return people.planets; }),
         __metadata("design:type", Array)

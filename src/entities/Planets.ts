@@ -12,27 +12,21 @@ import {
   
     @Column({unique: true})
     name: string;
-  
-    @Column()
-    description: string;
-  
-    @Column()
-    diameter: number;
-  
+    
     @Column()
     rotation_period: number;
-  
+
     @Column()
     orbital_period: number;
-
+    
     @Column()
-    gravity: string;
-
-    @Column()
-    population: number;
+    diameter: number;            
 
     @Column()
     climate: string;
+
+    @Column()
+    gravity: string;
 
     @Column()
     terrain: string;
@@ -41,7 +35,22 @@ import {
     surface_water: number;
 
     @Column()
-    imageURL: string;
+    population: number;
+
+    @Column({type: 'text', array: true, nullable: true })
+    residents: string[];
+
+    @Column({type: 'text', array: true, nullable: true })
+    films: string[];
+
+    @Column()
+    created: Date;
+
+    @Column()
+    edited: Date;
+
+    @Column()
+    url: string;
     
     //Relationship with peple (one planet to many people)
     @OneToMany(() => People, people => people.planets)
