@@ -3,6 +3,7 @@ import { getRepository } from 'typeorm'  // getRepository"  traer una tabla de l
 import { Users } from './entities/Users'
 import { Exception } from './utils'
 import { People } from './entities/People'
+import fetch from 'cross-fetch';
 
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
 
@@ -28,25 +29,38 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
 }
 
 export const createPeople = async (req: Request, res: Response): Promise<Response> => {
-    const baseURL = "https://swapi.dev/api/";    
-    //let people: string[] = [];
-    const fetchPeopleData = async () => {
+    const baseURL = "https://swapi.dev/api/people";
+    /*const fetchVehiclesData = async () => {
         try {
-            const response = await fetch(baseURL + "people");
+            const response = await fetch(baseURL);
             const responseJson = await response.json();
-            /*const people = getRepository(People).create(responseJson.results); 
-            const results = await getRepository(People).save(people); //Grabo el nuevo usuario */
-            //const results:any[] = responseJson.results;            
             return responseJson.results;
         } catch (e) {
             console.error(e);
-        }        
-    };    
-    const people = fetchPeopleData();   
-    console.log(people);
-    const response = {
+        }
+    };
+    console.log(fetchVehiclesData());*/
+
+    const fetchPeopleData = await fetch(baseURL)
+        .then(async res => {
+            if (res.status >= 400) {
+                throw new Error("Bad response from server");
+            }
+            //return res.json();
+            const responseJson = await res.json();
+            return responseJson.results;
+        })
+        .then(user => {
+            console.log(user);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+    console.log(fetchPeopleData);    
+    const r = {
         message: "All People created",
         state: true
     }
-    return res.json(response);
+    return res.json(r);
 }

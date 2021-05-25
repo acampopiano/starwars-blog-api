@@ -35,11 +35,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
 exports.createPeople = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Users_1 = require("./entities/Users");
 var utils_1 = require("./utils");
+var cross_fetch_1 = __importDefault(require("cross-fetch"));
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, newUser, results;
     return __generator(this, function (_a) {
@@ -82,40 +86,41 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
 }); };
 exports.getUsers = getUsers;
 var createPeople = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var baseURL, fetchPeopleData, people, response;
+    var baseURL, fetchPeopleData, r;
     return __generator(this, function (_a) {
-        baseURL = "https://swapi.dev/api/";
-        fetchPeopleData = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var response_1, responseJson, e_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, fetch(baseURL + "people")];
-                    case 1:
-                        response_1 = _a.sent();
-                        return [4 /*yield*/, response_1.json()];
-                    case 2:
-                        responseJson = _a.sent();
-                        /*const people = getRepository(People).create(responseJson.results);
-                        const results = await getRepository(People).save(people); //Grabo el nuevo usuario */
-                        //const results:any[] = responseJson.results;            
-                        return [2 /*return*/, responseJson.results];
-                    case 3:
-                        e_1 = _a.sent();
-                        console.error(e_1);
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
-                }
-            });
-        }); };
-        people = fetchPeopleData();
-        console.log(people);
-        response = {
-            message: "All People created",
-            state: true
-        };
-        return [2 /*return*/, res.json(response)];
+        switch (_a.label) {
+            case 0:
+                baseURL = "https://swapi.dev/api/people";
+                return [4 /*yield*/, cross_fetch_1["default"](baseURL)
+                        .then(function (res) { return __awaiter(void 0, void 0, void 0, function () {
+                        var responseJson;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    if (res.status >= 400) {
+                                        throw new Error("Bad response from server");
+                                    }
+                                    return [4 /*yield*/, res.json()];
+                                case 1:
+                                    responseJson = _a.sent();
+                                    return [2 /*return*/, responseJson.results];
+                            }
+                        });
+                    }); })
+                        .then(function (user) {
+                        console.log(user);
+                    })["catch"](function (err) {
+                        console.error(err);
+                    })];
+            case 1:
+                fetchPeopleData = _a.sent();
+                console.log(fetchPeopleData);
+                r = {
+                    message: "All People created",
+                    state: true
+                };
+                return [2 /*return*/, res.json(r)];
+        }
     });
 }); };
 exports.createPeople = createPeople;
