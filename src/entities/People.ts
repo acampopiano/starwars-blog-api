@@ -30,7 +30,7 @@ import {
     eye_color: string;
 
     @Column()
-    birth_year: number;
+    birth_year: string;
 
     @Column()
     gender: string;

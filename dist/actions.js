@@ -43,6 +43,7 @@ exports.createPeople = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Users_1 = require("./entities/Users");
 var utils_1 = require("./utils");
+var People_1 = require("./entities/People");
 var cross_fetch_1 = __importDefault(require("cross-fetch"));
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, newUser, results;
@@ -109,9 +110,35 @@ var createPeople = function (req, res) { return __awaiter(void 0, void 0, void 0
                     }); })
                         .then(function (people) { return __awaiter(void 0, void 0, void 0, function () {
                         return __generator(this, function (_a) {
-                            people.map(function (item, index) {
-                                console.log(item.name);
-                            });
+                            people.map(function (item, index) { return __awaiter(void 0, void 0, void 0, function () {
+                                var newPeople, results;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            req.body.name = item.name;
+                                            req.body.height = item.height;
+                                            req.body.mass = item.mass;
+                                            req.body.hair_color = item.hair_color;
+                                            req.body.skin_color = item.skin_color;
+                                            req.body.eye_color = item.eye_color;
+                                            req.body.birth_year = item.birth_year;
+                                            req.body.gender = item.gender;
+                                            req.body.homeworld = item.homeworld;
+                                            req.body.films = item.films;
+                                            req.body.species = item.species;
+                                            req.body.vehicles = item.vehicles;
+                                            req.body.starships = item.starships;
+                                            req.body.created = item.created;
+                                            req.body.edited = item.edited;
+                                            req.body.url = item.url;
+                                            newPeople = typeorm_1.getRepository(People_1.People).create(req.body);
+                                            return [4 /*yield*/, typeorm_1.getRepository(People_1.People).save(newPeople)];
+                                        case 1:
+                                            results = _a.sent();
+                                            return [2 /*return*/];
+                                    }
+                                });
+                            }); });
                             return [2 /*return*/];
                         });
                     }); })["catch"](function (err) {

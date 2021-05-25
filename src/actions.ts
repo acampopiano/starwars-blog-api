@@ -35,21 +35,37 @@ export const createPeople = async (req: Request, res: Response): Promise<Respons
         .then(async res => {
             if (res.status >= 400) {
                 throw new Error("Bad response from server");
-            }            
+            }
             const responseJson = await res.json();
             return responseJson.results;
         })
         .then(async people => {
-            people.map((item: any,index: any)=>{
-                console.log(item.name);
+            people.map(async (item: any, index: any) => {
+                req.body.name = item.name;
+                req.body.height = item.height;
+                req.body.mass = item.mass;
+                req.body.hair_color = item.hair_color;
+                req.body.skin_color = item.skin_color;
+                req.body.eye_color = item.eye_color;
+                req.body.birth_year = item.birth_year;
+                req.body.gender = item.gender;
+                req.body.homeworld = item.homeworld;
+                req.body.films = item.films;
+                req.body.species = item.species;
+                req.body.vehicles = item.vehicles;
+                req.body.starships = item.starships;
+                req.body.created = item.created;
+                req.body.edited = item.edited;
+                req.body.url = item.url;
+                const newPeople = getRepository(People).create(req.body);  //Creo un usuario
+                const results = await getRepository(People).save(newPeople); //Grabo el nuevo usuario 
             });
-            //const newPeople = getRepository(People).create(people);  //Creo un usuario
-            //const results = await getRepository(People).save(newPeople); //Grabo el nuevo usuario 
+            
         })
         .catch(err => {
             console.error(err);
-    });    
-    
+        });
+
     const r = {
         message: "All People created",
         state: true
