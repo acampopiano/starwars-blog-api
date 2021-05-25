@@ -72,3 +72,8 @@ export const createPeople = async (req: Request, res: Response): Promise<Respons
     }
     return res.json(r);
 }
+
+export const getPeople = async (req: Request, res: Response): Promise<Response> => {
+    const people = await getRepository(People).find();
+    return res.json(people);
+}

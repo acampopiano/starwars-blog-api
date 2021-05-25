@@ -20,4 +20,5 @@ const router = Router();
 
 router.get('/user', safe(actions.getUsers));
 router.get('/createPeople', safe(actions.createPeople));
+router.get('/people', safe(actions.getPeople));
 export default router;

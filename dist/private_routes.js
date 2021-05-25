@@ -38,4 +38,5 @@ var actions = __importStar(require("./actions"));
 var router = express_1.Router();
 router.get('/user', utils_1.safe(actions.getUsers));
 router.get('/createPeople', utils_1.safe(actions.createPeople));
+router.get('/people', utils_1.safe(actions.getPeople));
 exports["default"] = router;
