@@ -57,8 +57,8 @@ export const createPeople = async (req: Request, res: Response): Promise<Respons
                 req.body.created = item.created;
                 req.body.edited = item.edited;
                 req.body.url = item.url;
-                const newPeople = getRepository(People).create(req.body);  //Creo un usuario
-                const results = await getRepository(People).save(newPeople); //Grabo el nuevo usuario 
+                const newPeople = getRepository(People).create(req.body);  //Creo por cada iteración el personaje
+                const results = await getRepository(People).save(newPeople); //Grabo el nuevo personaje
             });
             
         })
