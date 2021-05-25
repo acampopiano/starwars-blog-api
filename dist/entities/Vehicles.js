@@ -24,51 +24,73 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 exports.__esModule = true;
-exports.User = void 0;
+exports.Vehicles = void 0;
 var typeorm_1 = require("typeorm");
-var UserFavoritePlanets_1 = require("./UserFavoritePlanets");
-var UserFavoritePeople_1 = require("./UserFavoritePeople");
-var UserFavoriteVehicles_1 = require("./UserFavoriteVehicles");
-var User = /** @class */ (function (_super) {
-    __extends(User, _super);
-    function User() {
+var PeopleVehicle_1 = require("./PeopleVehicle");
+var Vehicles = /** @class */ (function (_super) {
+    __extends(Vehicles, _super);
+    function Vehicles() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
         __metadata("design:type", Number)
-    ], User.prototype, "id");
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", String)
-    ], User.prototype, "first_name");
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", String)
-    ], User.prototype, "last_name");
+    ], Vehicles.prototype, "id");
     __decorate([
         typeorm_1.Column({ unique: true }),
         __metadata("design:type", String)
-    ], User.prototype, "email");
+    ], Vehicles.prototype, "name");
     __decorate([
-        typeorm_1.Column({ unique: true }),
+        typeorm_1.Column(),
         __metadata("design:type", String)
-    ], User.prototype, "password");
+    ], Vehicles.prototype, "model");
     __decorate([
-        typeorm_1.OneToMany(function () { return UserFavoritePlanets_1.UserFavoritePlanets; }, function (userfavoriteplanets) { return userfavoriteplanets.user; }),
-        __metadata("design:type", Array)
-    ], User.prototype, "userfavoriteplanets");
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Vehicles.prototype, "vehicle_class");
     __decorate([
-        typeorm_1.OneToMany(function () { return UserFavoritePeople_1.UserFavoritePeople; }, function (userfavoritepeople) { return userfavoritepeople.user; }),
-        __metadata("design:type", Array)
-    ], User.prototype, "userfavoritepeople");
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Vehicles.prototype, "manufacturer");
     __decorate([
-        typeorm_1.OneToMany(function () { return UserFavoriteVehicles_1.UserFavoriteVehicles; }, function (userfavoritevehicles) { return userfavoritevehicles.user; }),
+        typeorm_1.Column(),
+        __metadata("design:type", Number)
+    ], Vehicles.prototype, "cost_in_credits");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", Number)
+    ], Vehicles.prototype, "length");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", Number)
+    ], Vehicles.prototype, "crew");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", Number)
+    ], Vehicles.prototype, "passengers");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", Number)
+    ], Vehicles.prototype, "max_atmosphering_speed");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", Number)
+    ], Vehicles.prototype, "cargo_capacity");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Vehicles.prototype, "consumables");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Vehicles.prototype, "imageURL");
+    __decorate([
+        typeorm_1.OneToMany(function () { return PeopleVehicle_1.PeopleVehicle; }, function (peoplevehicle) { return peoplevehicle.vehicles; }),
         __metadata("design:type", Array)
-    ], User.prototype, "userfavoritvehicles");
-    User = __decorate([
+    ], Vehicles.prototype, "peoplevehicle");
+    Vehicles = __decorate([
         typeorm_1.Entity()
-    ], User);
-    return User;
+    ], Vehicles);
+    return Vehicles;
 }(typeorm_1.BaseEntity));
-exports.User = User;
+exports.Vehicles = Vehicles;

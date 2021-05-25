@@ -36,10 +36,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getUsers = exports.createUser = void 0;
+exports.createPeople = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Users_1 = require("./entities/Users");
 var utils_1 = require("./utils");
+var People_1 = require("./entities/People");
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, newUser, results;
     return __generator(this, function (_a) {
@@ -81,3 +82,41 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getUsers = getUsers;
+var createPeople = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var baseURL, fetchPeopleData, response;
+    return __generator(this, function (_a) {
+        baseURL = "https://www.swapi.tech/api/";
+        fetchPeopleData = function () { return __awaiter(void 0, void 0, void 0, function () {
+            var response_1, responseJson, people, results, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, , 5]);
+                        return [4 /*yield*/, fetch(baseURL + "people")];
+                    case 1:
+                        response_1 = _a.sent();
+                        return [4 /*yield*/, response_1.json()];
+                    case 2:
+                        responseJson = _a.sent();
+                        people = typeorm_1.getRepository(People_1.People).create(responseJson.results);
+                        return [4 /*yield*/, typeorm_1.getRepository(People_1.People).save(people)];
+                    case 3:
+                        results = _a.sent();
+                        return [3 /*break*/, 5];
+                    case 4:
+                        e_1 = _a.sent();
+                        console.error(e_1);
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        }); };
+        fetchPeopleData();
+        response = {
+            message: "All People created",
+            state: true
+        };
+        return [2 /*return*/, res.json(response)];
+    });
+}); };
+exports.createPeople = createPeople;

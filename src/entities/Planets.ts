@@ -44,6 +44,6 @@ import {
     imageURL: string;
     
     //Relationship with peple (one planet to many people)
-    @OneToMany(() => People, people => people.planet_id)
+    @OneToMany(() => People, people => people.planets)
     peoples: People[];    
   }

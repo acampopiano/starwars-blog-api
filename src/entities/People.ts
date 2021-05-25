@@ -10,10 +10,7 @@ import {
   export class People extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
-  
-    @Column()
-    planet_id: number;
-    
+        
     @Column({unique: true})
     name: string;
   
@@ -40,9 +37,27 @@ import {
 
     @Column()
     homeworld: string;
+    
+    @Column({type: 'text', array: true, nullable: true })
+    films: string[];
+
+    @Column({type: 'text', array: true, nullable: true })
+    species: string[];
+
+    @Column({type: 'text', array: true, nullable: true })
+    vehicles:string[];
+
+    @Column({type: 'text', array: true, nullable: true })
+    starships:string[];
 
     @Column()
-    imageURL: string;
+    created: string;
+
+    @Column()
+    edited: string;
+
+    @Column()
+    url: string;
 
     //Relationship with planets (many people to one planet)
     @ManyToOne(() => Planets, planets => planets.peoples)

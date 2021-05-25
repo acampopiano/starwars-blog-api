@@ -6,7 +6,7 @@ import {
 import { People } from "./People"
 import { Vehicles } from "./Vehicles"
 @Entity()
-export class PeopleVehicle extends BaseEntity {        
+export class PeopleVehicle extends BaseEntity {          
     //Relationship with people(many peoplevehicle to one people)
     @ManyToOne(() => People, people => people.id)
     people: People;

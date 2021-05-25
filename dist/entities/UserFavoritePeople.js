@@ -24,33 +24,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 exports.__esModule = true;
-exports.Planet = void 0;
+exports.UserFavoritePeople = void 0;
 var typeorm_1 = require("typeorm");
-var Users_1 = require("./Users");
-var Planet = /** @class */ (function (_super) {
-    __extends(Planet, _super);
-    function Planet() {
+var User_1 = require("./User");
+var People_1 = require("./People");
+var UserFavoritePeople = /** @class */ (function (_super) {
+    __extends(UserFavoritePeople, _super);
+    function UserFavoritePeople() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
-        typeorm_1.PrimaryGeneratedColumn(),
-        __metadata("design:type", Number)
-    ], Planet.prototype, "id");
+        typeorm_1.ManyToOne(function () { return People_1.People; }, function (people) { return people.id; }),
+        __metadata("design:type", People_1.People)
+    ], UserFavoritePeople.prototype, "people");
     __decorate([
-        typeorm_1.Column({ unique: true }),
-        __metadata("design:type", String)
-    ], Planet.prototype, "name");
-    __decorate([
-        typeorm_1.Column({ nullable: true }),
-        __metadata("design:type", String)
-    ], Planet.prototype, "picture_url");
-    __decorate([
-        typeorm_1.ManyToMany(function () { return Users_1.Users; }, function (user) { return user.planets; }),
-        __metadata("design:type", Array)
-    ], Planet.prototype, "users");
-    Planet = __decorate([
+        typeorm_1.ManyToOne(function () { return User_1.User; }, function (user) { return user.id; }),
+        __metadata("design:type", User_1.User)
+    ], UserFavoritePeople.prototype, "user");
+    UserFavoritePeople = __decorate([
         typeorm_1.Entity()
-    ], Planet);
-    return Planet;
+    ], UserFavoritePeople);
+    return UserFavoritePeople;
 }(typeorm_1.BaseEntity));
-exports.Planet = Planet;
+exports.UserFavoritePeople = UserFavoritePeople;
