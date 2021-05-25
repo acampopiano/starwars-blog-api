@@ -39,4 +39,6 @@ var router = express_1.Router();
 router.get('/user', utils_1.safe(actions.getUsers));
 router.get('/createPeople', utils_1.safe(actions.createPeople));
 router.get('/people', utils_1.safe(actions.getPeople));
+router.get('/people/:id', utils_1.safe(actions.getPeopleId));
+router.get('/createPlanets', utils_1.safe(actions.createPlanets));
 exports["default"] = router;

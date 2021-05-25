@@ -14,13 +14,13 @@ import {
     name: string;
     
     @Column()
-    rotation_period: number;
+    rotation_period: string;
 
     @Column()
-    orbital_period: number;
+    orbital_period: string;
     
     @Column()
-    diameter: number;            
+    diameter: string;            
 
     @Column()
     climate: string;
@@ -32,10 +32,10 @@ import {
     terrain: string;
 
     @Column()
-    surface_water: number;
+    surface_water: string;
 
     @Column()
-    population: number;
+    population: string;
 
     @Column({type: 'text', array: true, nullable: true })
     residents: string[];
@@ -53,6 +53,6 @@ import {
     url: string;
     
     //Relationship with peple (one planet to many people)
-    @OneToMany(() => People, people => people.planets)
+    @OneToMany(() => People, people => people.planets,{cascade: true})
     peoples: People[];    
   }

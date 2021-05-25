@@ -21,4 +21,7 @@ const router = Router();
 router.get('/user', safe(actions.getUsers));
 router.get('/createPeople', safe(actions.createPeople));
 router.get('/people', safe(actions.getPeople));
+router.get('/people/:id', safe(actions.getPeopleId));
+router.get('/createPlanets', safe(actions.createPlanets));
+
 export default router;

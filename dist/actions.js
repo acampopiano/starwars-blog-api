@@ -39,12 +39,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.getPeople = exports.createPeople = exports.getUsers = exports.createUser = void 0;
+exports.createPlanets = exports.getPeopleId = exports.getPeople = exports.createPeople = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var User_1 = require("./entities/User");
 var utils_1 = require("./utils");
 var People_1 = require("./entities/People");
 var cross_fetch_1 = __importDefault(require("cross-fetch"));
+var Planets_1 = require("./entities/Planets");
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, newUser, results;
     return __generator(this, function (_a) {
@@ -167,3 +168,86 @@ var getPeople = function (req, res) { return __awaiter(void 0, void 0, void 0, f
     });
 }); };
 exports.getPeople = getPeople;
+var getPeopleId = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var peopleRepo, people;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                peopleRepo = typeorm_1.getRepository(People_1.People);
+                return [4 /*yield*/, peopleRepo.findOne(req.params.id)];
+            case 1:
+                people = _a.sent();
+                if (!people)
+                    throw new utils_1.Exception("Character does not exist");
+                return [2 /*return*/, res.json(people)];
+        }
+    });
+}); };
+exports.getPeopleId = getPeopleId;
+var createPlanets = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var baseURL, fetchPlaneteData, r;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                baseURL = "https://swapi.dev/api/planets";
+                return [4 /*yield*/, cross_fetch_1["default"](baseURL)
+                        .then(function (res) { return __awaiter(void 0, void 0, void 0, function () {
+                        var responseJson;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    if (res.status >= 400) {
+                                        throw new Error("Bad response from server");
+                                    }
+                                    return [4 /*yield*/, res.json()];
+                                case 1:
+                                    responseJson = _a.sent();
+                                    return [2 /*return*/, responseJson.results];
+                            }
+                        });
+                    }); })
+                        .then(function (planet) { return __awaiter(void 0, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            planet.map(function (item, index) { return __awaiter(void 0, void 0, void 0, function () {
+                                var newPlanets, results;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            req.body.name = item.name;
+                                            req.body.rotation_period = item.rotation_period;
+                                            req.body.orbital_period = item.orbital_period;
+                                            req.body.diameter = item.diameter;
+                                            req.body.climate = item.climate;
+                                            req.body.gravity = item.gravity;
+                                            req.body.terrain = item.terrain;
+                                            req.body.surface_water = item.surface_water;
+                                            req.body.population = item.population;
+                                            req.body.residents = item.residents;
+                                            req.body.films = item.films;
+                                            req.body.created = item.created;
+                                            req.body.edited = item.edited;
+                                            req.body.url = item.url;
+                                            newPlanets = typeorm_1.getRepository(Planets_1.Planets).create(req.body);
+                                            return [4 /*yield*/, typeorm_1.getRepository(Planets_1.Planets).save(newPlanets)];
+                                        case 1:
+                                            results = _a.sent();
+                                            return [2 /*return*/];
+                                    }
+                                });
+                            }); });
+                            return [2 /*return*/];
+                        });
+                    }); })["catch"](function (err) {
+                        console.error(err);
+                    })];
+            case 1:
+                fetchPlaneteData = _a.sent();
+                r = {
+                    message: "All Planets created",
+                    state: true
+                };
+                return [2 /*return*/, res.json(r)];
+        }
+    });
+}); };
+exports.createPlanets = createPlanets;

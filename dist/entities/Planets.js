@@ -42,15 +42,15 @@ var Planets = /** @class */ (function (_super) {
     ], Planets.prototype, "name");
     __decorate([
         typeorm_1.Column(),
-        __metadata("design:type", Number)
+        __metadata("design:type", String)
     ], Planets.prototype, "rotation_period");
     __decorate([
         typeorm_1.Column(),
-        __metadata("design:type", Number)
+        __metadata("design:type", String)
     ], Planets.prototype, "orbital_period");
     __decorate([
         typeorm_1.Column(),
-        __metadata("design:type", Number)
+        __metadata("design:type", String)
     ], Planets.prototype, "diameter");
     __decorate([
         typeorm_1.Column(),
@@ -66,11 +66,11 @@ var Planets = /** @class */ (function (_super) {
     ], Planets.prototype, "terrain");
     __decorate([
         typeorm_1.Column(),
-        __metadata("design:type", Number)
+        __metadata("design:type", String)
     ], Planets.prototype, "surface_water");
     __decorate([
         typeorm_1.Column(),
-        __metadata("design:type", Number)
+        __metadata("design:type", String)
     ], Planets.prototype, "population");
     __decorate([
         typeorm_1.Column({ type: 'text', array: true, nullable: true }),
@@ -93,7 +93,7 @@ var Planets = /** @class */ (function (_super) {
         __metadata("design:type", String)
     ], Planets.prototype, "url");
     __decorate([
-        typeorm_1.OneToMany(function () { return People_1.People; }, function (people) { return people.planets; }),
+        typeorm_1.OneToMany(function () { return People_1.People; }, function (people) { return people.planets; }, { cascade: true }),
         __metadata("design:type", Array)
     ], Planets.prototype, "peoples");
     Planets = __decorate([

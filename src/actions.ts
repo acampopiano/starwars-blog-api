@@ -4,6 +4,7 @@ import { User } from './entities/User'
 import { Exception } from './utils'
 import { People } from './entities/People'
 import fetch from 'cross-fetch';
+import { Planets } from './entities/Planets'
 
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
 
@@ -60,7 +61,7 @@ export const createPeople = async (req: Request, res: Response): Promise<Respons
                 const newPeople = getRepository(People).create(req.body);  //Creo por cada iteración el personaje
                 const results = await getRepository(People).save(newPeople); //Grabo el nuevo personaje
             });
-            
+
         })
         .catch(err => {
             console.error(err);
@@ -76,4 +77,54 @@ export const createPeople = async (req: Request, res: Response): Promise<Respons
 export const getPeople = async (req: Request, res: Response): Promise<Response> => {
     const people = await getRepository(People).find();
     return res.json(people);
+}
+
+export const getPeopleId = async (req: Request, res: Response): Promise<Response> => {
+    const peopleRepo = getRepository(People)
+    const people = await peopleRepo.findOne(req.params.id)
+    if (!people) throw new Exception("Character does not exist")
+    return res.json(people);
+}
+
+export const createPlanets = async (req: Request, res: Response): Promise<Response> => {
+    const baseURL = "https://swapi.dev/api/planets";
+
+    const fetchPlaneteData = await fetch(baseURL)
+        .then(async res => {
+            if (res.status >= 400) {
+                throw new Error("Bad response from server");
+            }
+            const responseJson = await res.json();
+            return responseJson.results;
+        })
+        .then(async planet => {
+            planet.map(async (item: any, index: any) => {
+                req.body.name = item.name;
+                req.body.rotation_period = item.rotation_period;
+                req.body.orbital_period = item.orbital_period;
+                req.body.diameter = item.diameter;
+                req.body.climate = item.climate;
+                req.body.gravity = item.gravity;
+                req.body.terrain = item.terrain;
+                req.body.surface_water = item.surface_water;
+                req.body.population = item.population;
+                req.body.residents = item.residents;
+                req.body.films = item.films;
+                req.body.created = item.created;
+                req.body.edited = item.edited;
+                req.body.url = item.url;
+                const newPlanets = getRepository(Planets).create(req.body);  //Creo por cada iteración el personaje
+                const results = await getRepository(Planets).save(newPlanets); //Grabo el nuevo personaje
+            });
+
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+    const r = {
+        message: "All Planets created",
+        state: true
+    }
+    return res.json(r);
 }
