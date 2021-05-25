@@ -107,14 +107,18 @@ var createPeople = function (req, res) { return __awaiter(void 0, void 0, void 0
                             }
                         });
                     }); })
-                        .then(function (user) {
-                        console.log(user);
-                    })["catch"](function (err) {
+                        .then(function (people) { return __awaiter(void 0, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            people.map(function (item, index) {
+                                console.log(item.name);
+                            });
+                            return [2 /*return*/];
+                        });
+                    }); })["catch"](function (err) {
                         console.error(err);
                     })];
             case 1:
                 fetchPeopleData = _a.sent();
-                console.log(fetchPeopleData);
                 r = {
                     message: "All People created",
                     state: true

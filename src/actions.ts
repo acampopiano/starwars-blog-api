@@ -29,25 +29,27 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
 }
 
 export const createPeople = async (req: Request, res: Response): Promise<Response> => {
-    const baseURL = "https://swapi.dev/api/people";   
+    const baseURL = "https://swapi.dev/api/people";
 
     const fetchPeopleData = await fetch(baseURL)
         .then(async res => {
             if (res.status >= 400) {
                 throw new Error("Bad response from server");
-            }
-            //return res.json();
+            }            
             const responseJson = await res.json();
             return responseJson.results;
         })
-        .then(user => {
-            console.log(user);
+        .then(async people => {
+            people.map((item: any,index: any)=>{
+                console.log(item.name);
+            });
+            //const newPeople = getRepository(People).create(people);  //Creo un usuario
+            //const results = await getRepository(People).save(newPeople); //Grabo el nuevo usuario 
         })
         .catch(err => {
             console.error(err);
-        });
-
-    console.log(fetchPeopleData);    
+    });    
+    
     const r = {
         message: "All People created",
         state: true
