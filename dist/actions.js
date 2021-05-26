@@ -295,7 +295,7 @@ var getPlanetId = function (req, res) { return __awaiter(void 0, void 0, void 0,
 }); };
 exports.getPlanetId = getPlanetId;
 var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, email, password, user, userRepo, token;
+    var _a, email, password, userRepo, user, token;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -307,7 +307,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                 if (!validateEmail(email))
                     throw new utils_1.Exception("Please provide a valid email address", 400);
                 userRepo = typeorm_1.getRepository(User_1.User);
-                return [4 /*yield*/, userRepo.findOneOrFail({ where: { email: email } })];
+                return [4 /*yield*/, userRepo.findOne({ where: { email: email } })];
             case 1:
                 user = _b.sent();
                 if (!user)

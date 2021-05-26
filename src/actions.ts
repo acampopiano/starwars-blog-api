@@ -163,9 +163,9 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     if (!email) throw new Exception("Please specify an email on your request body", 400)
     if (!password) throw new Exception("Please specify a password on your request body", 400)
     if (!validateEmail(email)) throw new Exception("Please provide a valid email address", 400)
-    let user: User;
+    
     const userRepo = getRepository(User)
-    user = await userRepo.findOneOrFail({ where: { email } })
+    const user = await userRepo.findOne({ where: { email } })
     if (!user) throw new Exception("Invalid email", 401)
     if (!user.checkIfUnencryptedPasswordIsValid(password)) throw new Exception("Invalid password", 401)
     const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: process.env.JWT_TOKEN_EXPIRES_IN_HOUR });    
@@ -173,6 +173,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 }
 
 export const logout = async (req: Request, res: Response) => {
+    
     res.status(202).clearCookie('auth-token').send('Success logged out')
     
 }
