@@ -293,23 +293,26 @@ var getPlanetId = function (req, res) { return __awaiter(void 0, void 0, void 0,
 }); };
 exports.getPlanetId = getPlanetId;
 var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var userRepo, user, token;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a, email, password, user, userRepo, token;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                if (!req.body.email)
+                _a = req.body, email = _a.email, password = _a.password;
+                if (!email)
                     throw new utils_1.Exception("Please specify an email on your request body", 400);
-                if (!req.body.password)
+                if (!password)
                     throw new utils_1.Exception("Please specify a password on your request body", 400);
-                if (!validateEmail(req.body.email))
+                if (!validateEmail(email))
                     throw new utils_1.Exception("Please provide a valid email address", 400);
                 userRepo = typeorm_1.getRepository(User_1.User);
-                return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email, password: req.body.password } })];
+                return [4 /*yield*/, userRepo.findOneOrFail({ where: { email: email } })];
             case 1:
-                user = _a.sent();
+                user = _b.sent();
                 if (!user)
-                    throw new utils_1.Exception("Invalid email or password", 401);
-                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: 60 * 60 });
+                    throw new utils_1.Exception("Invalid email", 401);
+                if (!user.checkIfUnencryptedPasswordIsValid(password))
+                    throw new utils_1.Exception("Invalid password", 401);
+                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: "1h" });
                 localStorage.setItem("token", token);
                 return [2 /*return*/, res.json({ user: user, token: token })];
         }

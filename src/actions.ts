@@ -21,9 +21,9 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
     const user = await userRepo.findOne({ where: { email: req.body.email } })
     if (user) throw new Exception("Users already exists with this email")
 
-    let { first_name, last_name,email, password } = req.body;
+    let { first_name, last_name, email, password } = req.body;
     let oneUser = new User();
-    
+
     oneUser.first_name = first_name;
     oneUser.last_name = last_name;
     oneUser.email = email;
@@ -157,14 +157,19 @@ export const getPlanetId = async (req: Request, res: Response): Promise<Response
 }
 
 export const login = async (req: Request, res: Response): Promise<Response> => {
-    if (!req.body.email) throw new Exception("Please specify an email on your request body", 400)
-    if (!req.body.password) throw new Exception("Please specify a password on your request body", 400)
-    if (!validateEmail(req.body.email)) throw new Exception("Please provide a valid email address",400)
+    let { email, password } = req.body;
 
+    if (!email) throw new Exception("Please specify an email on your request body", 400)
+    if (!password) throw new Exception("Please specify a password on your request body", 400)
+    if (!validateEmail(email)) throw new Exception("Please provide a valid email address", 400)
+
+    let user: User;
     const userRepo = getRepository(User)
-    const user = await userRepo.findOne({ where: { email: req.body.email, password: req.body.password } })
-    if (!user) throw new Exception("Invalid email or password", 401)
-    const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: 60 * 60 });
+    
+    user = await userRepo.findOneOrFail({ where: { email } })
+    if (!user) throw new Exception("Invalid email", 401)    
+    if (!user.checkIfUnencryptedPasswordIsValid(password)) throw new Exception("Invalid password", 401)    
+    const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: "1h" });
     localStorage.setItem("token", token);
     return res.json({ user, token });
 }
