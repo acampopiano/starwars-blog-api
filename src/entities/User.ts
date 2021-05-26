@@ -6,7 +6,8 @@ import {
   import {UserFavoritePlanets} from "./UserFavoritePlanets";
   import {UserFavoritePeople} from "./UserFavoritePeople"
   import {UserFavoriteVehicles} from "./UserFavoriteVehicles"
-
+  import { Length, IsNotEmpty } from "class-validator";
+  import * as bcrypt from 'bcryptjs';
   @Entity()
   export class User extends BaseEntity{
     @PrimaryGeneratedColumn()
@@ -21,9 +22,17 @@ import {
     @Column({unique: true})
     email: string;
   
-    @Column({unique: true})
+    @Column()
+    @Length(4, 100)
     password: string;
-  
+    
+    hashPassword() {
+        this.password = bcrypt.hashSync(this.password, 8);
+    }
+
+    checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
+        return bcrypt.compareSync(unencryptedPassword, this.password);
+    }
 
     //Relationship with UserFavoritePlanets (one user like many planets)
     @OneToMany(() => UserFavoritePlanets, userfavoriteplanets => userfavoriteplanets.user)

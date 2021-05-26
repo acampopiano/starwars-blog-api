@@ -21,7 +21,16 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
     const user = await userRepo.findOne({ where: { email: req.body.email } })
     if (user) throw new Exception("Users already exists with this email")
 
-    const newUser = getRepository(User).create(req.body);  //Creo un usuario
+    let { first_name, last_name,email, password } = req.body;
+    let oneUser = new User();
+    
+    oneUser.first_name = first_name;
+    oneUser.last_name = last_name;
+    oneUser.email = email;
+    oneUser.password = password;
+    oneUser.hashPassword();
+
+    const newUser = getRepository(User).create(oneUser);  //Creo un usuario
     const results = await getRepository(User).save(newUser); //Grabo el nuevo usuario 
     return res.json(results);
 }
@@ -148,17 +157,17 @@ export const getPlanetId = async (req: Request, res: Response): Promise<Response
 }
 
 export const login = async (req: Request, res: Response): Promise<Response> => {
-    if(!req.body.email) throw new Exception("Please specify an email on your request body",400)
-    if(!req.body.password) throw new Exception("Please specify a password on your request body",400)
+    if (!req.body.email) throw new Exception("Please specify an email on your request body", 400)
+    if (!req.body.password) throw new Exception("Please specify a password on your request body", 400)
     const userRepo = getRepository(User)
-    const user = await userRepo.findOne({where: {email:req.body.email, password:req.body.password}})
-    if(!user) throw new Exception("Invalid email or password",401)
-    const token = jwt.sign({user}, process.env.JWT_KEY as string,{ expiresIn: 60 * 60 });
-    localStorage.setItem("token", token);        
-    return res.json({user, token});
+    const user = await userRepo.findOne({ where: { email: req.body.email, password: req.body.password } })
+    if (!user) throw new Exception("Invalid email or password", 401)
+    const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: 60 * 60 });
+    localStorage.setItem("token", token);
+    return res.json({ user, token });
 }
 
-const validateEmail = (email:string) => {
-  const res = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return res.test(email);
+const validateEmail = (email: string) => {
+    const res = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return res.test(email);
 }

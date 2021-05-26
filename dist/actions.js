@@ -48,9 +48,9 @@ var cross_fetch_1 = __importDefault(require("cross-fetch"));
 var Planets_1 = require("./entities/Planets");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var userRepo, user, newUser, results;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var userRepo, user, _a, first_name, last_name, email, password, oneUser, newUser, results;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 // important validations to avoid ambiguos errors, the client needs to understand what went wrong
                 if (!req.body.first_name)
@@ -66,13 +66,20 @@ var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 userRepo = typeorm_1.getRepository(User_1.User);
                 return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email } })];
             case 1:
-                user = _a.sent();
+                user = _b.sent();
                 if (user)
                     throw new utils_1.Exception("Users already exists with this email");
-                newUser = typeorm_1.getRepository(User_1.User).create(req.body);
+                _a = req.body, first_name = _a.first_name, last_name = _a.last_name, email = _a.email, password = _a.password;
+                oneUser = new User_1.User();
+                oneUser.first_name = first_name;
+                oneUser.last_name = last_name;
+                oneUser.email = email;
+                oneUser.password = password;
+                oneUser.hashPassword();
+                newUser = typeorm_1.getRepository(User_1.User).create(oneUser);
                 return [4 /*yield*/, typeorm_1.getRepository(User_1.User).save(newUser)];
             case 2:
-                results = _a.sent();
+                results = _b.sent();
                 return [2 /*return*/, res.json(results)];
         }
     });
