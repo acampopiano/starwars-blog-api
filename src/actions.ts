@@ -30,6 +30,10 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
     return res.json(users);
 }
 
+export const addFavoritePeople async (req: Request, res: Response): Promise<Response> => {
+    const currentUser = await getRepository(User).findOne();
+}
+
 export const createPeople = async (req: Request, res: Response): Promise<Response> => {
     const baseURL = "https://swapi.dev/api/people";
 

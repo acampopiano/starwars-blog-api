@@ -37,11 +37,13 @@ var verifyToken = function (req, res, next) {
 };
 // declare a new router to include all the endpoints
 var router = express_1.Router();
-router.get('/user', verifyToken, utils_1.safe(actions.getUsers));
+router.get('/users', verifyToken, utils_1.safe(actions.getUsers));
 router.get('/createPeople', verifyToken, utils_1.safe(actions.createPeople));
 router.get('/people', verifyToken, utils_1.safe(actions.getPeople));
 router.get('/people/:id', verifyToken, utils_1.safe(actions.getPeopleId));
 router.get('/createPlanets', verifyToken, utils_1.safe(actions.createPlanets));
 router.get('/planets', verifyToken, utils_1.safe(actions.getPlanets));
 router.get('/planets/:id', verifyToken, utils_1.safe(actions.getPlanetId));
+router.post('/favorite/people/<int:people_id>', verifyToken, utils_1.safe(actions.addFavoritePeople));
+router.post('/favorite/planet/<int:planet_id>', verifyToken, utils_1.safe(actions.addFavoritePlanet));
 exports["default"] = router;

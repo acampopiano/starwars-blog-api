@@ -31,12 +31,15 @@ const verifyToken = (req: Request, res: Response, next:NextFunction) =>
 // declare a new router to include all the endpoints
 const router = Router();
 
-router.get('/user', verifyToken, safe(actions.getUsers));
+router.get('/users', verifyToken, safe(actions.getUsers));
 router.get('/createPeople', verifyToken, safe(actions.createPeople));
 router.get('/people',verifyToken, safe(actions.getPeople));
 router.get('/people/:id',verifyToken, safe(actions.getPeopleId));
 router.get('/createPlanets', verifyToken,safe(actions.createPlanets));
 router.get('/planets', verifyToken, safe(actions.getPlanets));
 router.get('/planets/:id',verifyToken, safe(actions.getPlanetId));
+
+router.post('/favorite/people/<int:people_id>',verifyToken,safe(actions.addFavoritePeople));
+router.post('/favorite/planet/<int:planet_id>',verifyToken,safe(actions.addFavoritePlanet));
 
 export default router;
