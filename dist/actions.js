@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.createToken = exports.getPlanetId = exports.getPlanets = exports.createPlanets = exports.getPeopleId = exports.getPeople = exports.createPeople = exports.async = exports.addFavoritePeople = exports.getUsers = exports.createUser = void 0;
+exports.login = exports.getPlanetId = exports.getPlanets = exports.createPlanets = exports.getPeopleId = exports.getPeople = exports.createPeople = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var User_1 = require("./entities/User");
 var utils_1 = require("./utils");
@@ -59,6 +59,8 @@ var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                     throw new utils_1.Exception("Please provide a last_name");
                 if (!req.body.email)
                     throw new utils_1.Exception("Please provide an email");
+                if (!validateEmail(req.body.email))
+                    throw new utils_1.Exception("Please provide an valid email address");
                 if (!req.body.password)
                     throw new utils_1.Exception("Please provide a password");
                 userRepo = typeorm_1.getRepository(User_1.User);
@@ -88,9 +90,9 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getUsers = getUsers;
-(function (req, res) {
-    var currentUser = yield typeorm_1.getRepository(User_1.User).findOne();
-});
+/*export const addFavoritePeople = async (req: Request, res: Response): Promise<Response> => {
+    const currentUser = await getRepository(User).findOne();
+}*/
 var createPeople = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var baseURL, fetchPeopleData, r;
     return __generator(this, function (_a) {
@@ -283,7 +285,7 @@ var getPlanetId = function (req, res) { return __awaiter(void 0, void 0, void 0,
     });
 }); };
 exports.getPlanetId = getPlanetId;
-var createToken = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, token;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -298,9 +300,14 @@ var createToken = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 user = _a.sent();
                 if (!user)
                     throw new utils_1.Exception("Invalid email or password", 401);
-                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY);
+                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: 60 * 60 });
+                localStorage.setItem("token", token);
                 return [2 /*return*/, res.json({ user: user, token: token })];
         }
     });
 }); };
-exports.createToken = createToken;
+exports.login = login;
+var validateEmail = function (email) {
+    var res = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return res.test(email);
+};

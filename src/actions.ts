@@ -13,6 +13,7 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
     if (!req.body.first_name) throw new Exception("Please provide a first_name")
     if (!req.body.last_name) throw new Exception("Please provide a last_name")
     if (!req.body.email) throw new Exception("Please provide an email")
+    if (!validateEmail(req.body.email)) throw new Exception("Please provide an valid email address")
     if (!req.body.password) throw new Exception("Please provide a password")
 
     const userRepo = getRepository(User)
@@ -30,9 +31,9 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
     return res.json(users);
 }
 
-export const addFavoritePeople async (req: Request, res: Response): Promise<Response> => {
+/*export const addFavoritePeople = async (req: Request, res: Response): Promise<Response> => {
     const currentUser = await getRepository(User).findOne();
-}
+}*/
 
 export const createPeople = async (req: Request, res: Response): Promise<Response> => {
     const baseURL = "https://swapi.dev/api/people";
@@ -146,12 +147,18 @@ export const getPlanetId = async (req: Request, res: Response): Promise<Response
     return res.json(planet);
 }
 
-export const createToken = async (req: Request, res: Response): Promise<Response> => {
+export const login = async (req: Request, res: Response): Promise<Response> => {
     if(!req.body.email) throw new Exception("Please specify an email on your request body",400)
     if(!req.body.password) throw new Exception("Please specify a password on your request body",400)
     const userRepo = getRepository(User)
     const user = await userRepo.findOne({where: {email:req.body.email, password:req.body.password}})
     if(!user) throw new Exception("Invalid email or password",401)
-    const token = jwt.sign({user}, process.env.JWT_KEY as string);
+    const token = jwt.sign({user}, process.env.JWT_KEY as string,{ expiresIn: 60 * 60 });
+    localStorage.setItem("token", token);        
     return res.json({user, token});
+}
+
+const validateEmail = (email:string) => {
+  const res = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return res.test(email);
 }
