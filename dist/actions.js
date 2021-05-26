@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.login = exports.getPlanetId = exports.getPlanets = exports.createPlanets = exports.getPeopleId = exports.getPeople = exports.createPeople = exports.getUsers = exports.createUser = void 0;
+exports.logout = exports.login = exports.getPlanetId = exports.getPlanets = exports.createPlanets = exports.getPeopleId = exports.getPeople = exports.createPeople = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var User_1 = require("./entities/User");
 var utils_1 = require("./utils");
@@ -47,6 +47,8 @@ var People_1 = require("./entities/People");
 var cross_fetch_1 = __importDefault(require("cross-fetch"));
 var Planets_1 = require("./entities/Planets");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var node_localstorage_1 = require("node-localstorage");
+global.localStorage = new node_localstorage_1.LocalStorage('./scratch');
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, _a, first_name, last_name, email, password, oneUser, newUser, results;
     return __generator(this, function (_b) {
@@ -312,13 +314,19 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                     throw new utils_1.Exception("Invalid email", 401);
                 if (!user.checkIfUnencryptedPasswordIsValid(password))
                     throw new utils_1.Exception("Invalid password", 401);
-                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: "1h" });
-                //localStorage.setItem("token", token);
-                return [2 /*return*/, res.json({ user: user, token: token })];
+                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: process.env.JWT_TOKEN_EXPIRES_IN_HOUR });
+                return [2 /*return*/, res.cookie('auth-token', token, { httpOnly: true, path: '/', domain: 'localhost' }).json({ user: user, token: token })];
         }
     });
 }); };
 exports.login = login;
+var logout = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        res.status(202).clearCookie('auth-token').send('Success logged out');
+        return [2 /*return*/];
+    });
+}); };
+exports.logout = logout;
 var validateEmail = function (email) {
     var res = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return res.test(email);

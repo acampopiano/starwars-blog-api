@@ -6,6 +6,8 @@ import { People } from './entities/People'
 import fetch from 'cross-fetch';
 import { Planets } from './entities/Planets'
 import jwt from 'jsonwebtoken'
+import { LocalStorage } from "node-localstorage";
+global.localStorage = new LocalStorage('./scratch');
 
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
 
@@ -158,21 +160,25 @@ export const getPlanetId = async (req: Request, res: Response): Promise<Response
 
 export const login = async (req: Request, res: Response): Promise<Response> => {
     let { email, password } = req.body;
-
     if (!email) throw new Exception("Please specify an email on your request body", 400)
     if (!password) throw new Exception("Please specify a password on your request body", 400)
     if (!validateEmail(email)) throw new Exception("Please provide a valid email address", 400)
     let user: User;
-    const userRepo = getRepository(User)    
+    const userRepo = getRepository(User)
     user = await userRepo.findOneOrFail({ where: { email } })
-    if (!user) throw new Exception("Invalid email", 401)    
-    if (!user.checkIfUnencryptedPasswordIsValid(password)) throw new Exception("Invalid password", 401)    
-    const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: "1h" });
-    //localStorage.setItem("token", token);
-    return res.json({ user, token });
+    if (!user) throw new Exception("Invalid email", 401)
+    if (!user.checkIfUnencryptedPasswordIsValid(password)) throw new Exception("Invalid password", 401)
+    const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: process.env.JWT_TOKEN_EXPIRES_IN_HOUR });    
+    return res.cookie('auth-token', token, {httpOnly: true, path:'/', domain: 'localhost'}).json({ user, token });
+}
+
+export const logout = async (req: Request, res: Response) => {
+    res.status(202).clearCookie('auth-token').send('Success logged out')
+    
 }
 
 const validateEmail = (email: string) => {
     const res = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return res.test(email);
 }
+
