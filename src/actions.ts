@@ -13,7 +13,7 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
     if (!req.body.first_name) throw new Exception("Please provide a first_name")
     if (!req.body.last_name) throw new Exception("Please provide a last_name")
     if (!req.body.email) throw new Exception("Please provide an email")
-    if (!validateEmail(req.body.email)) throw new Exception("Please provide an valid email address")
+    if (!validateEmail(req.body.email)) throw new Exception("Please provide a valid email address")
     if (!req.body.password) throw new Exception("Please provide a password")
 
     const userRepo = getRepository(User)
@@ -159,6 +159,8 @@ export const getPlanetId = async (req: Request, res: Response): Promise<Response
 export const login = async (req: Request, res: Response): Promise<Response> => {
     if (!req.body.email) throw new Exception("Please specify an email on your request body", 400)
     if (!req.body.password) throw new Exception("Please specify a password on your request body", 400)
+    if (!validateEmail(req.body.email)) throw new Exception("Please provide a valid email address",400)
+
     const userRepo = getRepository(User)
     const user = await userRepo.findOne({ where: { email: req.body.email, password: req.body.password } })
     if (!user) throw new Exception("Invalid email or password", 401)

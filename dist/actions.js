@@ -60,7 +60,7 @@ var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 if (!req.body.email)
                     throw new utils_1.Exception("Please provide an email");
                 if (!validateEmail(req.body.email))
-                    throw new utils_1.Exception("Please provide an valid email address");
+                    throw new utils_1.Exception("Please provide a valid email address");
                 if (!req.body.password)
                     throw new utils_1.Exception("Please provide a password");
                 userRepo = typeorm_1.getRepository(User_1.User);
@@ -301,6 +301,8 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                     throw new utils_1.Exception("Please specify an email on your request body", 400);
                 if (!req.body.password)
                     throw new utils_1.Exception("Please specify a password on your request body", 400);
+                if (!validateEmail(req.body.email))
+                    throw new utils_1.Exception("Please provide a valid email address", 400);
                 userRepo = typeorm_1.getRepository(User_1.User);
                 return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email, password: req.body.password } })];
             case 1:
