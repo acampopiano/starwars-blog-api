@@ -313,7 +313,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                 if (!user.checkIfUnencryptedPasswordIsValid(password))
                     throw new utils_1.Exception("Invalid password", 401);
                 token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: "1h" });
-                localStorage.setItem("token", token);
+                //localStorage.setItem("token", token);
                 return [2 /*return*/, res.json({ user: user, token: token })];
         }
     });

@@ -162,15 +162,13 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     if (!email) throw new Exception("Please specify an email on your request body", 400)
     if (!password) throw new Exception("Please specify a password on your request body", 400)
     if (!validateEmail(email)) throw new Exception("Please provide a valid email address", 400)
-
     let user: User;
-    const userRepo = getRepository(User)
-    
+    const userRepo = getRepository(User)    
     user = await userRepo.findOneOrFail({ where: { email } })
     if (!user) throw new Exception("Invalid email", 401)    
     if (!user.checkIfUnencryptedPasswordIsValid(password)) throw new Exception("Invalid password", 401)    
     const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: "1h" });
-    localStorage.setItem("token", token);
+    //localStorage.setItem("token", token);
     return res.json({ user, token });
 }
 
