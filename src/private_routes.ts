@@ -11,9 +11,12 @@
  * 
  */
 
-import { Router } from 'express';
+import { Router, NextFunction } from 'express';
 import { safe } from './utils';
 import * as actions from './actions';
+import jwt from 'jsonwebtoken';
+import { getRepository } from 'typeorm';
+
 
 // declare a new router to include all the endpoints
 const router = Router();
