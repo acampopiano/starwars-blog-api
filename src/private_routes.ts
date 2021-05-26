@@ -10,23 +10,33 @@
  * Please include in this file all your private URL endpoints.
  * 
  */
-
+import { Request, Response } from 'express'
 import { Router, NextFunction } from 'express';
 import { safe } from './utils';
 import * as actions from './actions';
 import jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
+import { verify } from 'crypto';
 
+const verifyToken = (req: Request, res: Response, next:NextFunction) =>
+{
+    const token = req.header('Authorization');
+    if(!token) return res.status(400).json('ACCESS DENIED');
+    const decoded = jwt.verify(token as string, process.env.JWT_KEY as string)
+    req.user = decoded;
+    console.log(decoded);
+    next()
+}
 
 // declare a new router to include all the endpoints
 const router = Router();
 
-router.get('/user', safe(actions.getUsers));
-router.get('/createPeople', safe(actions.createPeople));
-router.get('/people', safe(actions.getPeople));
-router.get('/people/:id', safe(actions.getPeopleId));
-router.get('/createPlanets', safe(actions.createPlanets));
-router.get('/planets', safe(actions.getPlanets));
-router.get('/planets/:id', safe(actions.getPlanetId));
+router.get('/user', verifyToken, safe(actions.getUsers));
+router.get('/createPeople', verifyToken, safe(actions.createPeople));
+router.get('/people',verifyToken, safe(actions.getPeople));
+router.get('/people/:id',verifyToken, safe(actions.getPeopleId));
+router.get('/createPlanets', verifyToken,safe(actions.createPlanets));
+router.get('/planets', verifyToken, safe(actions.getPlanets));
+router.get('/planets/:id',verifyToken, safe(actions.getPlanetId));
 
 export default router;

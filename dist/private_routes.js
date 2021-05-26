@@ -1,16 +1,4 @@
 "use strict";
-/**
- * Pivate Routes are those API urls that require the user to be
- * logged in before they can be called from the front end.
- *
- * Basically all HTTP requests to these endpoints must have an
- * Authorization header with the value "Bearer <token>"
- * being "<token>" a JWT token generated for the user using
- * the POST /token endpoint
- *
- * Please include in this file all your private URL endpoints.
- *
- */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -30,17 +18,30 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
 var express_1 = require("express");
 var utils_1 = require("./utils");
 var actions = __importStar(require("./actions"));
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var verifyToken = function (req, res, next) {
+    var token = req.header('Authorization');
+    if (!token)
+        return res.status(400).json('ACCESS DENIED');
+    var decoded = jsonwebtoken_1["default"].verify(token, process.env.JWT_KEY);
+    req.user = decoded;
+    console.log(decoded);
+    next();
+};
 // declare a new router to include all the endpoints
 var router = express_1.Router();
-router.get('/user', utils_1.safe(actions.getUsers));
-router.get('/createPeople', utils_1.safe(actions.createPeople));
-router.get('/people', utils_1.safe(actions.getPeople));
-router.get('/people/:id', utils_1.safe(actions.getPeopleId));
-router.get('/createPlanets', utils_1.safe(actions.createPlanets));
-router.get('/planets', utils_1.safe(actions.getPlanets));
-router.get('/planets/:id', utils_1.safe(actions.getPlanetId));
+router.get('/user', verifyToken, utils_1.safe(actions.getUsers));
+router.get('/createPeople', verifyToken, utils_1.safe(actions.createPeople));
+router.get('/people', verifyToken, utils_1.safe(actions.getPeople));
+router.get('/people/:id', verifyToken, utils_1.safe(actions.getPeopleId));
+router.get('/createPlanets', verifyToken, utils_1.safe(actions.createPlanets));
+router.get('/planets', verifyToken, utils_1.safe(actions.getPlanets));
+router.get('/planets/:id', verifyToken, utils_1.safe(actions.getPlanetId));
 exports["default"] = router;
