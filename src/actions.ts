@@ -170,7 +170,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     const user = await userRepo.findOne({ where: { email } })
     if (!user) throw new Exception("Invalid email", 401)
     if (!user.checkIfUnencryptedPasswordIsValid(password)) throw new Exception("Invalid password", 401)
-    const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: "1h" });
+    const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: process.env.JWT_TOKEN_EXPIRE_IN});
     res.cookie('currentUser', email);        
     return res.cookie('auth-token', token, {httpOnly: true, path:'/', domain: 'localhost'}).json({ user, token });
 }
@@ -215,11 +215,13 @@ export const addFavoritePeople = async (req: Request, res: Response): Promise<Re
     
     if(userFavoritePeople) throw new Exception("People/User relation exists!")  
     
-    const newfpeople = new UserFavoritePeople();    
-    newfpeople.people = people;
-    newfpeople.user = userSearch;               
-    const results = await userFavoritePeopleRepo.save(newfpeople); //Grabo el nuevo usuario */
-    return res.json(userFavoritePeople);    
+    const oneUFP = new UserFavoritePeople();    
+    oneUFP.people = people;
+    oneUFP.user = userSearch;     
+
+    const newUFP = userFavoritePeopleRepo.create(oneUFP);          
+    const results = await userFavoritePeopleRepo.save(newUFP); 
+    return res.json(results);    
 }
 
 export const addFavoritePlanet = async (req: Request, res: Response): Promise<Response> => {
@@ -232,21 +234,29 @@ export const addFavoritePlanet = async (req: Request, res: Response): Promise<Re
        user_id = item.user.id;
     })
     
-    const planetsRepo = getRepository(Planets)
+    const planetRepo = getRepository(Planets)
     const userRepo = getRepository(User)
-        
-    const planet = await planetsRepo.findOne({ where: { id: planet_id } })
+    const userFavoritePlanetsRepo = getRepository(UserFavoritePlanets);
+    const planet = await planetRepo.findOne({ where: { id: planet_id } })
     const userSearch = await userRepo.findOne({where:{id: user_id}})
+    const userFavoritePlanets = await userFavoritePlanetsRepo.findOne({
+        relations: ['user','planets'],
+        where: {
+            planets: planet, 
+            user: userSearch
+        }
+    })    
     if (!planet) throw new Exception("Planet id not found")
-    if (!planet_id) throw new Exception("Please provide a planet id")
+    if (!req.params) throw new Exception("Please provide a planet id")
     if (!userSearch) throw new Exception("User not found")
-
-    const newfplanet = new UserFavoritePlanets();
     
-    newfplanet.planets = planet;
-    newfplanet.user = userSearch;
-           
-    const userFavoritePlanetRepo = getRepository(UserFavoritePlanets);
-    const results = await userFavoritePlanetRepo.save(newfplanet); //Grabo el nuevo usuario */
-    return res.json(results);    
+    if(userFavoritePlanets) throw new Exception("Planet/User relation exists!")  
+    
+    const oneUFP = new UserFavoritePlanets();    
+    oneUFP.planets = planet;
+    oneUFP.user = userSearch;     
+
+    const newUFP = userFavoritePlanetsRepo.create(oneUFP);          
+    const results = await userFavoritePlanetsRepo.save(newUFP);
+    return res.json(results);
 }

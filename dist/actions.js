@@ -316,7 +316,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                     throw new utils_1.Exception("Invalid email", 401);
                 if (!user.checkIfUnencryptedPasswordIsValid(password))
                     throw new utils_1.Exception("Invalid password", 401);
-                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: "1h" });
+                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: process.env.JWT_TOKEN_EXPIRE_IN });
                 res.cookie('currentUser', email);
                 return [2 /*return*/, res.cookie('auth-token', token, { httpOnly: true, path: '/', domain: 'localhost' }).json({ user: user, token: token })];
         }
@@ -336,7 +336,7 @@ var validateEmail = function (email) {
     return res.test(email);
 };
 var addFavoritePeople = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var people_id, raw, user_id, map, peopleRepo, userRepo, userFavoritePeopleRepo, people, userSearch, userFavoritePeople, newfpeople, results;
+    var people_id, raw, user_id, map, peopleRepo, userRepo, userFavoritePeopleRepo, people, userSearch, userFavoritePeople, oneUFP, newUFP, results;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -373,19 +373,20 @@ var addFavoritePeople = function (req, res) { return __awaiter(void 0, void 0, v
                     throw new utils_1.Exception("User not found");
                 if (userFavoritePeople)
                     throw new utils_1.Exception("People/User relation exists!");
-                newfpeople = new UserFavoritePeople_1.UserFavoritePeople();
-                newfpeople.people = people;
-                newfpeople.user = userSearch;
-                return [4 /*yield*/, userFavoritePeopleRepo.save(newfpeople)];
+                oneUFP = new UserFavoritePeople_1.UserFavoritePeople();
+                oneUFP.people = people;
+                oneUFP.user = userSearch;
+                newUFP = userFavoritePeopleRepo.create(oneUFP);
+                return [4 /*yield*/, userFavoritePeopleRepo.save(newUFP)];
             case 4:
                 results = _a.sent();
-                return [2 /*return*/, res.json(userFavoritePeople)];
+                return [2 /*return*/, res.json(results)];
         }
     });
 }); };
 exports.addFavoritePeople = addFavoritePeople;
 var addFavoritePlanet = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var planet_id, raw, user_id, map, planetsRepo, userRepo, planet, userSearch, newfplanet, userFavoritePlanetRepo, results;
+    var planet_id, raw, user_id, map, planetRepo, userRepo, userFavoritePlanetsRepo, planet, userSearch, userFavoritePlanets, oneUFP, newUFP, results;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -396,26 +397,38 @@ var addFavoritePlanet = function (req, res) { return __awaiter(void 0, void 0, v
                 [raw].forEach(function (item, index) {
                     user_id = item.user.id;
                 });
-                planetsRepo = typeorm_1.getRepository(Planets_1.Planets);
+                planetRepo = typeorm_1.getRepository(Planets_1.Planets);
                 userRepo = typeorm_1.getRepository(User_1.User);
-                return [4 /*yield*/, planetsRepo.findOne({ where: { id: planet_id } })];
+                userFavoritePlanetsRepo = typeorm_1.getRepository(UserFavoritePlanets_1.UserFavoritePlanets);
+                return [4 /*yield*/, planetRepo.findOne({ where: { id: planet_id } })];
             case 1:
                 planet = _a.sent();
                 return [4 /*yield*/, userRepo.findOne({ where: { id: user_id } })];
             case 2:
                 userSearch = _a.sent();
+                return [4 /*yield*/, userFavoritePlanetsRepo.findOne({
+                        relations: ['user', 'planets'],
+                        where: {
+                            planets: planet,
+                            user: userSearch
+                        }
+                    })];
+            case 3:
+                userFavoritePlanets = _a.sent();
                 if (!planet)
                     throw new utils_1.Exception("Planet id not found");
-                if (!planet_id)
+                if (!req.params)
                     throw new utils_1.Exception("Please provide a planet id");
                 if (!userSearch)
                     throw new utils_1.Exception("User not found");
-                newfplanet = new UserFavoritePlanets_1.UserFavoritePlanets();
-                newfplanet.planets = planet;
-                newfplanet.user = userSearch;
-                userFavoritePlanetRepo = typeorm_1.getRepository(UserFavoritePlanets_1.UserFavoritePlanets);
-                return [4 /*yield*/, userFavoritePlanetRepo.save(newfplanet)];
-            case 3:
+                if (userFavoritePlanets)
+                    throw new utils_1.Exception("Planet/User relation exists!");
+                oneUFP = new UserFavoritePlanets_1.UserFavoritePlanets();
+                oneUFP.planets = planet;
+                oneUFP.user = userSearch;
+                newUFP = userFavoritePlanetsRepo.create(oneUFP);
+                return [4 /*yield*/, userFavoritePlanetsRepo.save(newUFP)];
+            case 4:
                 results = _a.sent();
                 return [2 /*return*/, res.json(results)];
         }
