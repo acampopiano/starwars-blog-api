@@ -46,18 +46,16 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
 export const getUsersFavorites = async (req: Request, res: Response): Promise<Response> => {
     const allUsersFavoritesPlanets = await getRepository(UserFavoritePlanets).find(
         {
-            relations:['user','planets'],   
-            loadEagerRelations: true,         
+            relations:['user','planets'],               
             order: {user:'ASC'}
         });
     const allUsersFavoritesPeople = await getRepository(UserFavoritePeople).find(
         {
-            relations:['user','people'],
-            loadEagerRelations: true,
+            relations:['user','people'],            
             order: {user:'ASC'}
         });
-    const results = {...allUsersFavoritesPeople,...allUsersFavoritesPlanets}
-    return res.json();
+    const results = extend(allUsersFavoritesPeople,allUsersFavoritesPlanets)
+    return res.json(results);
 }
 
 

@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -58,6 +47,7 @@ var People_1 = require("./entities/People");
 var cross_fetch_1 = __importDefault(require("cross-fetch"));
 var Planets_1 = require("./entities/Planets");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var extend_1 = __importDefault(require("extend"));
 var UserFavoritePlanets_1 = require("./entities/UserFavoritePlanets");
 var UserFavoritePeople_1 = require("./entities/UserFavoritePeople");
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
@@ -116,20 +106,18 @@ var getUsersFavorites = function (req, res) { return __awaiter(void 0, void 0, v
         switch (_a.label) {
             case 0: return [4 /*yield*/, typeorm_1.getRepository(UserFavoritePlanets_1.UserFavoritePlanets).find({
                     relations: ['user', 'planets'],
-                    loadEagerRelations: true,
                     order: { user: 'ASC' }
                 })];
             case 1:
                 allUsersFavoritesPlanets = _a.sent();
                 return [4 /*yield*/, typeorm_1.getRepository(UserFavoritePeople_1.UserFavoritePeople).find({
                         relations: ['user', 'people'],
-                        loadEagerRelations: true,
                         order: { user: 'ASC' }
                     })];
             case 2:
                 allUsersFavoritesPeople = _a.sent();
-                results = __assign(__assign({}, allUsersFavoritesPeople), allUsersFavoritesPlanets);
-                return [2 /*return*/, res.json()];
+                results = extend_1["default"](allUsersFavoritesPeople, allUsersFavoritesPlanets);
+                return [2 /*return*/, res.json(results)];
         }
     });
 }); };
