@@ -356,24 +356,30 @@ var addFavoritePeople = function (req, res) { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, userRepo.findOne({ where: { id: user_id } })];
             case 2:
                 userSearch = _a.sent();
-                return [4 /*yield*/, userFavoritePeopleRepo.findOne({ where: { people: people, user: userSearch } })];
+                return [4 /*yield*/, userFavoritePeopleRepo.findOne({
+                        relations: ['user', 'people'],
+                        where: {
+                            people: people,
+                            user: userSearch
+                        }
+                    })];
             case 3:
                 userFavoritePeople = _a.sent();
-                if (userFavoritePeople)
-                    throw new utils_1.Exception("People/User relation exists!");
                 if (!people)
                     throw new utils_1.Exception("People id not found");
-                if (!people_id)
+                if (!req.params)
                     throw new utils_1.Exception("Please provide a people id");
                 if (!userSearch)
                     throw new utils_1.Exception("User not found");
+                if (userFavoritePeople)
+                    throw new utils_1.Exception("People/User relation exists!");
                 newfpeople = new UserFavoritePeople_1.UserFavoritePeople();
                 newfpeople.people = people;
                 newfpeople.user = userSearch;
                 return [4 /*yield*/, userFavoritePeopleRepo.save(newfpeople)];
             case 4:
                 results = _a.sent();
-                return [2 /*return*/, res.json(results)];
+                return [2 /*return*/, res.json(userFavoritePeople)];
         }
     });
 }); };
