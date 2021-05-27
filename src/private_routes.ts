@@ -38,8 +38,9 @@ router.get('/people/:id',verifyToken, safe(actions.getPeopleId));
 router.get('/createPlanets', verifyToken,safe(actions.createPlanets));
 router.get('/planets', verifyToken, safe(actions.getPlanets));
 router.get('/planets/:id',verifyToken, safe(actions.getPlanetId));
+router.post('/logout', safe(actions.logout));
 
-/*router.post('/favorite/people/<int:people_id>',verifyToken,safe(actions.addFavoritePeople));
-router.post('/favorite/planet/<int:planet_id>',verifyToken,safe(actions.addFavoritePlanet));*/
+router.post('/favorite/people/:people_id',verifyToken,safe(actions.addFavoritePeople));
+router.post('/favorite/planet/:planet_id',verifyToken,safe(actions.addFavoritePlanet));
 
 export default router;

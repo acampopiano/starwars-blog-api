@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.logout = exports.login = exports.getPlanetId = exports.getPlanets = exports.createPlanets = exports.getPeopleId = exports.getPeople = exports.createPeople = exports.getUsers = exports.createUser = void 0;
+exports.addFavoritePlanet = exports.addFavoritePeople = exports.logout = exports.login = exports.getPlanetId = exports.getPlanets = exports.createPlanets = exports.getPeopleId = exports.getPeople = exports.createPeople = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var User_1 = require("./entities/User");
 var utils_1 = require("./utils");
@@ -322,6 +322,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
 exports.login = login;
 var logout = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
+        // req.session.destroy();
         res.status(202).clearCookie('auth-token').send('Success logged out');
         return [2 /*return*/];
     });
@@ -331,3 +332,41 @@ var validateEmail = function (email) {
     var res = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return res.test(email);
 };
+var addFavoritePeople = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var people_id;
+    return __generator(this, function (_a) {
+        people_id = req.params.people_id;
+        // important validations to avoid ambiguos errors, the client needs to understand what went wrong
+        if (!people_id)
+            throw new utils_1.Exception("Please provide a people id");
+        return [2 /*return*/, res.json(req.user)];
+    });
+}); };
+exports.addFavoritePeople = addFavoritePeople;
+var addFavoritePlanet = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var planet_id, planetsRepo, planet, newFP;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                planet_id = req.params.planet_id;
+                planetsRepo = typeorm_1.getRepository(Planets_1.Planets);
+                return [4 /*yield*/, planetsRepo.findOne({ where: { id: planet_id } })
+                    // important validations to avoid ambiguos errors, the client needs to understand what went wrong
+                ];
+            case 1:
+                planet = _a.sent();
+                // important validations to avoid ambiguos errors, the client needs to understand what went wrong
+                if (!planet_id)
+                    throw new utils_1.Exception("Please provide a planet id");
+                newFP = {
+                    planets: planet,
+                    user: req.user
+                };
+                res.locals;
+                /*const userFavoritePlanetRepo = getRepository(UserFavoritePlanets);
+                const results = await userFavoritePlanetRepo.save(newFP); //Grabo el nuevo usuario */
+                return [2 /*return*/, res.json(req.user)];
+        }
+    });
+}); };
+exports.addFavoritePlanet = addFavoritePlanet;

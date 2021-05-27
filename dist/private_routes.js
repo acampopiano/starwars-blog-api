@@ -44,6 +44,7 @@ router.get('/people/:id', verifyToken, utils_1.safe(actions.getPeopleId));
 router.get('/createPlanets', verifyToken, utils_1.safe(actions.createPlanets));
 router.get('/planets', verifyToken, utils_1.safe(actions.getPlanets));
 router.get('/planets/:id', verifyToken, utils_1.safe(actions.getPlanetId));
-/*router.post('/favorite/people/<int:people_id>',verifyToken,safe(actions.addFavoritePeople));
-router.post('/favorite/planet/<int:planet_id>',verifyToken,safe(actions.addFavoritePlanet));*/
+router.post('/logout', utils_1.safe(actions.logout));
+router.post('/favorite/people/:people_id', verifyToken, utils_1.safe(actions.addFavoritePeople));
+router.post('/favorite/planet/:planet_id', verifyToken, utils_1.safe(actions.addFavoritePlanet));
 exports["default"] = router;

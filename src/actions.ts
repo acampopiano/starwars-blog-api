@@ -7,6 +7,7 @@ import fetch from 'cross-fetch';
 import { Planets } from './entities/Planets'
 import jwt from 'jsonwebtoken'
 import { LocalStorage } from "node-localstorage";
+import { UserFavoritePlanets } from './entities/UserFavoritePlanets'
 global.localStorage = new LocalStorage('./scratch');
 
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
@@ -173,6 +174,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 }
 
 export const logout = async (req: Request, res: Response) => {
+   // req.session.destroy();
     
     res.status(202).clearCookie('auth-token').send('Success logged out')
     
@@ -183,3 +185,33 @@ const validateEmail = (email: string) => {
     return res.test(email);
 }
 
+export const addFavoritePeople = async (req: Request, res: Response): Promise<Response> => {
+    let { people_id } = req.params
+
+    // important validations to avoid ambiguos errors, the client needs to understand what went wrong
+    if (!people_id) throw new Exception("Please provide a people id")
+        
+    
+    return res.json(req.user);
+}
+export const addFavoritePlanet = async (req: Request, res: Response): Promise<Response> => {
+    const { planet_id } = req.params  
+    
+    const planetsRepo = getRepository(Planets)
+    // fetch for any user with this email
+    const planet = await planetsRepo.findOne({ where: { id: planet_id } })
+
+    // important validations to avoid ambiguos errors, the client needs to understand what went wrong
+    if (!planet_id) throw new Exception("Please provide a planet id")
+    
+    const newFP = {
+        planets: planet,
+        user: req.user
+    }
+    res.locals
+    
+    /*const userFavoritePlanetRepo = getRepository(UserFavoritePlanets);
+    const results = await userFavoritePlanetRepo.save(newFP); //Grabo el nuevo usuario */
+    return res.json(req.user);
+    
+}
