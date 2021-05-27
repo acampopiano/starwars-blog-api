@@ -6,10 +6,9 @@ import { People } from './entities/People'
 import fetch from 'cross-fetch';
 import { Planets } from './entities/Planets'
 import jwt from 'jsonwebtoken'
-import { LocalStorage } from "node-localstorage";
+import extend from 'extend'
 import { UserFavoritePlanets } from './entities/UserFavoritePlanets'
 import { UserFavoritePeople } from './entities/UserFavoritePeople'
-global.localStorage = new LocalStorage('./scratch');
 
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
 
@@ -45,10 +44,20 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
 }
 
 export const getUsersFavorites = async (req: Request, res: Response): Promise<Response> => {
-    const allUsersFavoritesPlanets = await getRepository(UserFavoritePlanets).find();
-    const allUsersFavoritesPeople = await getRepository(UserFavoritePeople).find();
+    const allUsersFavoritesPlanets = await getRepository(UserFavoritePlanets).find(
+        {
+            relations:['user','planets'],   
+            loadEagerRelations: true,         
+            order: {user:'ASC'}
+        });
+    const allUsersFavoritesPeople = await getRepository(UserFavoritePeople).find(
+        {
+            relations:['user','people'],
+            loadEagerRelations: true,
+            order: {user:'ASC'}
+        });
     const results = {...allUsersFavoritesPeople,...allUsersFavoritesPlanets}
-    return res.json(results);
+    return res.json();
 }
 
 

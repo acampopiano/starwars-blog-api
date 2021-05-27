@@ -58,10 +58,8 @@ var People_1 = require("./entities/People");
 var cross_fetch_1 = __importDefault(require("cross-fetch"));
 var Planets_1 = require("./entities/Planets");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var node_localstorage_1 = require("node-localstorage");
 var UserFavoritePlanets_1 = require("./entities/UserFavoritePlanets");
 var UserFavoritePeople_1 = require("./entities/UserFavoritePeople");
-global.localStorage = new node_localstorage_1.LocalStorage('./scratch');
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, _a, first_name, last_name, email, password, oneUser, newUser, results;
     return __generator(this, function (_b) {
@@ -116,14 +114,22 @@ var getUsersFavorites = function (req, res) { return __awaiter(void 0, void 0, v
     var allUsersFavoritesPlanets, allUsersFavoritesPeople, results;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getRepository(UserFavoritePlanets_1.UserFavoritePlanets).find()];
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(UserFavoritePlanets_1.UserFavoritePlanets).find({
+                    relations: ['user', 'planets'],
+                    loadEagerRelations: true,
+                    order: { user: 'ASC' }
+                })];
             case 1:
                 allUsersFavoritesPlanets = _a.sent();
-                return [4 /*yield*/, typeorm_1.getRepository(UserFavoritePeople_1.UserFavoritePeople).find()];
+                return [4 /*yield*/, typeorm_1.getRepository(UserFavoritePeople_1.UserFavoritePeople).find({
+                        relations: ['user', 'people'],
+                        loadEagerRelations: true,
+                        order: { user: 'ASC' }
+                    })];
             case 2:
                 allUsersFavoritesPeople = _a.sent();
                 results = __assign(__assign({}, allUsersFavoritesPeople), allUsersFavoritesPlanets);
-                return [2 /*return*/, res.json(results)];
+                return [2 /*return*/, res.json()];
         }
     });
 }); };
