@@ -38,10 +38,12 @@ router.get('/people/:id',verifyToken, safe(actions.getPeopleId));
 router.get('/createPlanets', verifyToken,safe(actions.createPlanets));
 router.get('/planets', verifyToken, safe(actions.getPlanets));
 router.get('/planets/:id',verifyToken, safe(actions.getPlanetId));
-router.post('/logout', safe(actions.logout));
+router.get('/users/favorites', verifyToken, safe(actions.getUsersFavorites));
 
+router.post('/logout', safe(actions.logout));
 router.post('/favorite/people/:people_id',verifyToken,safe(actions.addFavoritePeople));
 router.post('/favorite/planet/:planet_id',verifyToken,safe(actions.addFavoritePlanet));
+
 router.delete('/favorite/people/:people_id',verifyToken,safe(actions.delFavoritePeople));
 router.delete('/favorite/planet/:planet_id',verifyToken,safe(actions.delFavoritePlanet));
 

@@ -44,9 +44,13 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
     return res.json(users);
 }
 
-/*export const addFavoritePeople = async (req: Request, res: Response): Promise<Response> => {
-    const currentUser = await getRepository(User).findOne();
-}*/
+export const getUsersFavorites = async (req: Request, res: Response): Promise<Response> => {
+    const allUsersFavoritesPlanets = await getRepository(UserFavoritePlanets).find();
+    const allUsersFavoritesPeople = await getRepository(UserFavoritePeople).find();
+    const results = {...allUsersFavoritesPeople,...allUsersFavoritesPlanets}
+    return res.json(results);
+}
+
 
 export const createPeople = async (req: Request, res: Response): Promise<Response> => {
     const baseURL = "https://swapi.dev/api/people";
