@@ -8,6 +8,7 @@ import { Planets } from './entities/Planets'
 import jwt from 'jsonwebtoken'
 import { LocalStorage } from "node-localstorage";
 import { UserFavoritePlanets } from './entities/UserFavoritePlanets'
+import { UserFavoritePeople } from './entities/UserFavoritePeople'
 global.localStorage = new LocalStorage('./scratch');
 
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
@@ -187,34 +188,59 @@ const validateEmail = (email: string) => {
 }
 
 export const addFavoritePeople = async (req: Request, res: Response): Promise<Response> => {
-    let { people_id } = req.params
-
-    // important validations to avoid ambiguos errors, the client needs to understand what went wrong
-    if (!people_id) throw new Exception("Please provide a people id")
-        
+   const { people_id } = req.params 
     
-    return res.json(req.user);
+    let raw:any = req.user
+    let user_id:number=0;
+    const map = {}
+    ;[raw].forEach((item:any,index:any) =>{
+       user_id = item.user.id;
+    })
+    
+    const peopleRepo = getRepository(People)
+    const userRepo = getRepository(User)
+        
+    const people = await peopleRepo.findOne({ where: { id: people_id } })
+    const userSearch = await userRepo.findOne({where:{id: user_id}})
+    if (!people) throw new Exception("People id not found")
+    if (!people) throw new Exception("Please provide a people id")
+    if (!userSearch) throw new Exception("User not found")
+
+    const newfpeople = new UserFavoritePeople();
+    
+    newfpeople.people = people;
+    newfpeople.user = userSearch;
+           
+    const userFavoritePeopleRepo = getRepository(UserFavoritePeople);
+    const results = await userFavoritePeopleRepo.save(newfpeople); //Grabo el nuevo usuario */
+    return res.json(results);    
 }
 
 export const addFavoritePlanet = async (req: Request, res: Response): Promise<Response> => {
-    const { planet_id } = req.params      
-
-   
+    const { planet_id } = req.params 
+    
+    let raw:any = req.user
+    let user_id:number=0;
+    const map = {}
+    ;[raw].forEach((item:any,index:any) =>{
+       user_id = item.user.id;
+    })
+    
     const planetsRepo = getRepository(Planets)
     const userRepo = getRepository(User)
-    // fetch for any user with this email
+        
     const planet = await planetsRepo.findOne({ where: { id: planet_id } })
-    //const userSearch = await userRepo.findOne({where:{email:res.cookie('currentUser')}})
-    // important validations to avoid ambiguos errors, the client needs to understand what went wrong
-    if (!planet) throw new Exception("Please provide a planet id")
-    //if (!userSearch) throw new Exception("User not found")
+    const userSearch = await userRepo.findOne({where:{id: user_id}})
+    if (!planet) throw new Exception("Planet id not found")
+    if (!planet_id) throw new Exception("Please provide a planet id")
+    if (!userSearch) throw new Exception("User not found")
 
-    //const newfplanet = new UserFavoritePlanets();
+    const newfplanet = new UserFavoritePlanets();
     
-    //newfplanet.planets = planet;
-    //newfplanet.user = userSearch;
+    newfplanet.planets = planet;
+    newfplanet.user = userSearch;
            
-    //const userFavoritePlanetRepo = getRepository(UserFavoritePlanets);
-    //const results = await userFavoritePlanetRepo.save(newfplanet); //Grabo el nuevo usuario */
-    return res.json(req.user);    
+    const userFavoritePlanetRepo = getRepository(UserFavoritePlanets);
+    const results = await userFavoritePlanetRepo.save(newfplanet); //Grabo el nuevo usuario */
+    return res.json(results);    
 }
