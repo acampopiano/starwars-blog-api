@@ -42,5 +42,7 @@ router.post('/logout', safe(actions.logout));
 
 router.post('/favorite/people/:people_id',verifyToken,safe(actions.addFavoritePeople));
 router.post('/favorite/planet/:planet_id',verifyToken,safe(actions.addFavoritePlanet));
+router.delete('/favorite/people/:people_id',verifyToken,safe(actions.delFavoritePeople));
+router.delete('/favorite/planet/:planet_id',verifyToken,safe(actions.delFavoritePlanet));
 
 export default router;

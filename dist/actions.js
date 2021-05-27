@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.addFavoritePlanet = exports.addFavoritePeople = exports.logout = exports.login = exports.getPlanetId = exports.getPlanets = exports.createPlanets = exports.getPeopleId = exports.getPeople = exports.createPeople = exports.getUsers = exports.createUser = void 0;
+exports.delFavoritePlanet = exports.addFavoritePlanet = exports.delFavoritePeople = exports.addFavoritePeople = exports.logout = exports.login = exports.getPlanetId = exports.getPlanets = exports.createPlanets = exports.getPeopleId = exports.getPeople = exports.createPeople = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var User_1 = require("./entities/User");
 var utils_1 = require("./utils");
@@ -385,6 +385,55 @@ var addFavoritePeople = function (req, res) { return __awaiter(void 0, void 0, v
     });
 }); };
 exports.addFavoritePeople = addFavoritePeople;
+var delFavoritePeople = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var people_id, raw, user_id, map, peopleRepo, userRepo, userFavoritePeopleRepo, people, userSearch, userFavoritePeople, oneUFP, results;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                people_id = req.params.people_id;
+                raw = req.user;
+                user_id = 0;
+                map = {};
+                [raw].forEach(function (item, index) {
+                    user_id = item.user.id;
+                });
+                peopleRepo = typeorm_1.getRepository(People_1.People);
+                userRepo = typeorm_1.getRepository(User_1.User);
+                userFavoritePeopleRepo = typeorm_1.getRepository(UserFavoritePeople_1.UserFavoritePeople);
+                return [4 /*yield*/, peopleRepo.findOne({ where: { id: people_id } })];
+            case 1:
+                people = _a.sent();
+                return [4 /*yield*/, userRepo.findOne({ where: { id: user_id } })];
+            case 2:
+                userSearch = _a.sent();
+                return [4 /*yield*/, userFavoritePeopleRepo.findOne({
+                        relations: ['user', 'people'],
+                        where: {
+                            people: people,
+                            user: userSearch
+                        }
+                    })];
+            case 3:
+                userFavoritePeople = _a.sent();
+                if (!people)
+                    throw new utils_1.Exception("People id not found");
+                if (!req.params)
+                    throw new utils_1.Exception("Please provide a people id");
+                if (!userSearch)
+                    throw new utils_1.Exception("User not found");
+                if (!userFavoritePeople)
+                    throw new utils_1.Exception("People/User relation not exists!");
+                oneUFP = new UserFavoritePeople_1.UserFavoritePeople();
+                oneUFP.people = people;
+                oneUFP.user = userSearch;
+                return [4 /*yield*/, userFavoritePeopleRepo["delete"](oneUFP)];
+            case 4:
+                results = _a.sent();
+                return [2 /*return*/, res.json(results)];
+        }
+    });
+}); };
+exports.delFavoritePeople = delFavoritePeople;
 var addFavoritePlanet = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var planet_id, raw, user_id, map, planetRepo, userRepo, userFavoritePlanetsRepo, planet, userSearch, userFavoritePlanets, oneUFP, newUFP, results;
     return __generator(this, function (_a) {
@@ -435,3 +484,52 @@ var addFavoritePlanet = function (req, res) { return __awaiter(void 0, void 0, v
     });
 }); };
 exports.addFavoritePlanet = addFavoritePlanet;
+var delFavoritePlanet = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var planet_id, raw, user_id, map, planetRepo, userRepo, userFavoritePlanetsRepo, planet, userSearch, userFavoritePlanets, oneUFP, results;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                planet_id = req.params.planet_id;
+                raw = req.user;
+                user_id = 0;
+                map = {};
+                [raw].forEach(function (item, index) {
+                    user_id = item.user.id;
+                });
+                planetRepo = typeorm_1.getRepository(Planets_1.Planets);
+                userRepo = typeorm_1.getRepository(User_1.User);
+                userFavoritePlanetsRepo = typeorm_1.getRepository(UserFavoritePlanets_1.UserFavoritePlanets);
+                return [4 /*yield*/, planetRepo.findOne({ where: { id: planet_id } })];
+            case 1:
+                planet = _a.sent();
+                return [4 /*yield*/, userRepo.findOne({ where: { id: user_id } })];
+            case 2:
+                userSearch = _a.sent();
+                return [4 /*yield*/, userFavoritePlanetsRepo.findOne({
+                        relations: ['user', 'planets'],
+                        where: {
+                            planets: planet,
+                            user: userSearch
+                        }
+                    })];
+            case 3:
+                userFavoritePlanets = _a.sent();
+                if (!planet)
+                    throw new utils_1.Exception("Planet id not found");
+                if (!req.params)
+                    throw new utils_1.Exception("Please provide a planet id");
+                if (!userSearch)
+                    throw new utils_1.Exception("User not found");
+                if (!userFavoritePlanets)
+                    throw new utils_1.Exception("Planet/User relation not exists!");
+                oneUFP = new UserFavoritePlanets_1.UserFavoritePlanets();
+                oneUFP.planets = planet;
+                oneUFP.user = userSearch;
+                return [4 /*yield*/, userFavoritePlanetsRepo["delete"](oneUFP)];
+            case 4:
+                results = _a.sent();
+                return [2 /*return*/, res.json(results)];
+        }
+    });
+}); };
+exports.delFavoritePlanet = delFavoritePlanet;

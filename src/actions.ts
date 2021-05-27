@@ -224,6 +224,41 @@ export const addFavoritePeople = async (req: Request, res: Response): Promise<Re
     return res.json(results);    
 }
 
+export const delFavoritePeople = async (req: Request, res: Response): Promise<Response> => {
+   const { people_id } = req.params 
+    
+    let raw:any = req.user
+    let user_id:number=0;
+    const map = {}
+    ;[raw].forEach((item:any,index:any) =>{
+       user_id = item.user.id;
+    })
+    
+    const peopleRepo = getRepository(People)
+    const userRepo = getRepository(User)
+    const userFavoritePeopleRepo = getRepository(UserFavoritePeople);
+    const people = await peopleRepo.findOne({ where: { id: people_id } })
+    const userSearch = await userRepo.findOne({where:{id: user_id}})
+    const userFavoritePeople = await userFavoritePeopleRepo.findOne({
+        relations: ['user','people'],
+        where: {
+            people: people, 
+            user: userSearch
+        }
+    })    
+    if (!people) throw new Exception("People id not found")
+    if (!req.params) throw new Exception("Please provide a people id")
+    if (!userSearch) throw new Exception("User not found")
+    
+    if(!userFavoritePeople) throw new Exception("People/User relation not exists!")  
+    
+    const oneUFP = new UserFavoritePeople();    
+    oneUFP.people = people;
+    oneUFP.user = userSearch;     
+            
+    const results = await userFavoritePeopleRepo.delete(oneUFP); 
+    return res.json(results);    
+}
 export const addFavoritePlanet = async (req: Request, res: Response): Promise<Response> => {
     const { planet_id } = req.params 
     
@@ -258,5 +293,41 @@ export const addFavoritePlanet = async (req: Request, res: Response): Promise<Re
 
     const newUFP = userFavoritePlanetsRepo.create(oneUFP);          
     const results = await userFavoritePlanetsRepo.save(newUFP);
+    return res.json(results);
+}
+
+export const delFavoritePlanet = async (req: Request, res: Response): Promise<Response> => {
+    const { planet_id } = req.params 
+    
+    let raw:any = req.user
+    let user_id:number=0;
+    const map = {}
+    ;[raw].forEach((item:any,index:any) =>{
+       user_id = item.user.id;
+    })
+    
+    const planetRepo = getRepository(Planets)
+    const userRepo = getRepository(User)
+    const userFavoritePlanetsRepo = getRepository(UserFavoritePlanets);
+    const planet = await planetRepo.findOne({ where: { id: planet_id } })
+    const userSearch = await userRepo.findOne({where:{id: user_id}})
+    const userFavoritePlanets = await userFavoritePlanetsRepo.findOne({
+        relations: ['user','planets'],
+        where: {
+            planets: planet, 
+            user: userSearch
+        }
+    })    
+    if (!planet) throw new Exception("Planet id not found")
+    if (!req.params) throw new Exception("Please provide a planet id")
+    if (!userSearch) throw new Exception("User not found")
+    
+    if(!userFavoritePlanets) throw new Exception("Planet/User relation not exists!")  
+    
+    const oneUFP = new UserFavoritePlanets();    
+    oneUFP.planets = planet;
+    oneUFP.user = userSearch;     
+     
+    const results = await userFavoritePlanetsRepo.delete(oneUFP);
     return res.json(results);
 }
