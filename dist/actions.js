@@ -314,7 +314,8 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                     throw new utils_1.Exception("Invalid email", 401);
                 if (!user.checkIfUnencryptedPasswordIsValid(password))
                     throw new utils_1.Exception("Invalid password", 401);
-                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: process.env.JWT_TOKEN_EXPIRES_IN_HOUR });
+                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: "1h" });
+                res.cookie('currentUser', email);
                 return [2 /*return*/, res.cookie('auth-token', token, { httpOnly: true, path: '/', domain: 'localhost' }).json({ user: user, token: token })];
         }
     });
@@ -344,27 +345,29 @@ var addFavoritePeople = function (req, res) { return __awaiter(void 0, void 0, v
 }); };
 exports.addFavoritePeople = addFavoritePeople;
 var addFavoritePlanet = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var planet_id, planetsRepo, planet, newFP;
+    var planet_id, planetsRepo, userRepo, planet;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 planet_id = req.params.planet_id;
                 planetsRepo = typeorm_1.getRepository(Planets_1.Planets);
+                userRepo = typeorm_1.getRepository(User_1.User);
                 return [4 /*yield*/, planetsRepo.findOne({ where: { id: planet_id } })
+                    //const userSearch = await userRepo.findOne({where:{email:res.cookie('currentUser')}})
                     // important validations to avoid ambiguos errors, the client needs to understand what went wrong
                 ];
             case 1:
                 planet = _a.sent();
+                //const userSearch = await userRepo.findOne({where:{email:res.cookie('currentUser')}})
                 // important validations to avoid ambiguos errors, the client needs to understand what went wrong
-                if (!planet_id)
+                if (!planet)
                     throw new utils_1.Exception("Please provide a planet id");
-                newFP = {
-                    planets: planet,
-                    user: req.user
-                };
-                res.locals;
-                /*const userFavoritePlanetRepo = getRepository(UserFavoritePlanets);
-                const results = await userFavoritePlanetRepo.save(newFP); //Grabo el nuevo usuario */
+                //if (!userSearch) throw new Exception("User not found")
+                //const newfplanet = new UserFavoritePlanets();
+                //newfplanet.planets = planet;
+                //newfplanet.user = userSearch;
+                //const userFavoritePlanetRepo = getRepository(UserFavoritePlanets);
+                //const results = await userFavoritePlanetRepo.save(newfplanet); //Grabo el nuevo usuario */
                 return [2 /*return*/, res.json(req.user)];
         }
     });

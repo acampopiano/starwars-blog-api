@@ -169,7 +169,8 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     const user = await userRepo.findOne({ where: { email } })
     if (!user) throw new Exception("Invalid email", 401)
     if (!user.checkIfUnencryptedPasswordIsValid(password)) throw new Exception("Invalid password", 401)
-    const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: process.env.JWT_TOKEN_EXPIRES_IN_HOUR });    
+    const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: "1h" });
+    res.cookie('currentUser', email);        
     return res.cookie('auth-token', token, {httpOnly: true, path:'/', domain: 'localhost'}).json({ user, token });
 }
 
@@ -194,24 +195,26 @@ export const addFavoritePeople = async (req: Request, res: Response): Promise<Re
     
     return res.json(req.user);
 }
+
 export const addFavoritePlanet = async (req: Request, res: Response): Promise<Response> => {
-    const { planet_id } = req.params  
-    
+    const { planet_id } = req.params      
+
+   
     const planetsRepo = getRepository(Planets)
+    const userRepo = getRepository(User)
     // fetch for any user with this email
     const planet = await planetsRepo.findOne({ where: { id: planet_id } })
-
+    //const userSearch = await userRepo.findOne({where:{email:res.cookie('currentUser')}})
     // important validations to avoid ambiguos errors, the client needs to understand what went wrong
-    if (!planet_id) throw new Exception("Please provide a planet id")
+    if (!planet) throw new Exception("Please provide a planet id")
+    //if (!userSearch) throw new Exception("User not found")
+
+    //const newfplanet = new UserFavoritePlanets();
     
-    const newFP = {
-        planets: planet,
-        user: req.user
-    }
-    res.locals
-    
-    /*const userFavoritePlanetRepo = getRepository(UserFavoritePlanets);
-    const results = await userFavoritePlanetRepo.save(newFP); //Grabo el nuevo usuario */
-    return res.json(req.user);
-    
+    //newfplanet.planets = planet;
+    //newfplanet.user = userSearch;
+           
+    //const userFavoritePlanetRepo = getRepository(UserFavoritePlanets);
+    //const results = await userFavoritePlanetRepo.save(newfplanet); //Grabo el nuevo usuario */
+    return res.json(req.user);    
 }
