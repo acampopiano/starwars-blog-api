@@ -199,19 +199,22 @@ export const addFavoritePeople = async (req: Request, res: Response): Promise<Re
     
     const peopleRepo = getRepository(People)
     const userRepo = getRepository(User)
-        
+    const userFavoritePeopleRepo = getRepository(UserFavoritePeople);
     const people = await peopleRepo.findOne({ where: { id: people_id } })
     const userSearch = await userRepo.findOne({where:{id: user_id}})
+    const userFavoritePeople = await userFavoritePeopleRepo.findOne({where:{people:people, user:userSearch}})
+    if(userFavoritePeople) throw new Exception("People/User relation exists!")            
     if (!people) throw new Exception("People id not found")
-    if (!people) throw new Exception("Please provide a people id")
+    if (!people_id) throw new Exception("Please provide a people id")
     if (!userSearch) throw new Exception("User not found")
+
 
     const newfpeople = new UserFavoritePeople();
     
     newfpeople.people = people;
     newfpeople.user = userSearch;
            
-    const userFavoritePeopleRepo = getRepository(UserFavoritePeople);
+    
     const results = await userFavoritePeopleRepo.save(newfpeople); //Grabo el nuevo usuario */
     return res.json(results);    
 }

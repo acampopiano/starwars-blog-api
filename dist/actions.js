@@ -336,7 +336,7 @@ var validateEmail = function (email) {
     return res.test(email);
 };
 var addFavoritePeople = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var people_id, raw, user_id, map, peopleRepo, userRepo, people, userSearch, newfpeople, userFavoritePeopleRepo, results;
+    var people_id, raw, user_id, map, peopleRepo, userRepo, userFavoritePeopleRepo, people, userSearch, userFavoritePeople, newfpeople, results;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -349,24 +349,29 @@ var addFavoritePeople = function (req, res) { return __awaiter(void 0, void 0, v
                 });
                 peopleRepo = typeorm_1.getRepository(People_1.People);
                 userRepo = typeorm_1.getRepository(User_1.User);
+                userFavoritePeopleRepo = typeorm_1.getRepository(UserFavoritePeople_1.UserFavoritePeople);
                 return [4 /*yield*/, peopleRepo.findOne({ where: { id: people_id } })];
             case 1:
                 people = _a.sent();
                 return [4 /*yield*/, userRepo.findOne({ where: { id: user_id } })];
             case 2:
                 userSearch = _a.sent();
+                return [4 /*yield*/, userFavoritePeopleRepo.findOne({ where: { people: people, user: userSearch } })];
+            case 3:
+                userFavoritePeople = _a.sent();
+                if (userFavoritePeople)
+                    throw new utils_1.Exception("People/User relation exists!");
                 if (!people)
                     throw new utils_1.Exception("People id not found");
-                if (!people)
+                if (!people_id)
                     throw new utils_1.Exception("Please provide a people id");
                 if (!userSearch)
                     throw new utils_1.Exception("User not found");
                 newfpeople = new UserFavoritePeople_1.UserFavoritePeople();
                 newfpeople.people = people;
                 newfpeople.user = userSearch;
-                userFavoritePeopleRepo = typeorm_1.getRepository(UserFavoritePeople_1.UserFavoritePeople);
                 return [4 /*yield*/, userFavoritePeopleRepo.save(newfpeople)];
-            case 3:
+            case 4:
                 results = _a.sent();
                 return [2 /*return*/, res.json(results)];
         }
